@@ -3,6 +3,7 @@ require('dotenv').config();
 module.exports = {
 
     protocol: process.env.PROTOCOL || 'http',
+    appPath: process.env.APPPATH,
     database: {
         database: process.env.DB_DATABASE || 'captaincorportaion',
         username: process.env.DB_USERNAME || 'root',
