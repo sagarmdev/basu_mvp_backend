@@ -14,6 +14,22 @@ const MESSAGES = {
     '1102': "get all Room types",
     '1110': "data null",
 
+    //event 
+    '2001': 'Get event categories successfully.',
+    '2002': 'event categories not found.',
+    '2003': 'Get event amenities successfully.',
+    '2004': 'event amenities not found.',
+    '2005': 'Create event successfully..',
+
+    //item sale & rent 
+    '2101': 'Create item successfully..',
+    '2102': 'Get item categories successfully..',
+    '2103': 'item categories not found',
+    '2104': 'Get Rent & Sale successfully..',
+    '2105': 'Sale Or Rent not found',
+
+    //roommate
+    '2201': 'Add roommate  successfully..',
 
 }
 

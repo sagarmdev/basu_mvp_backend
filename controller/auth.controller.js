@@ -1,3 +1,4 @@
+
 const db = require("../config/db.config");
 const Validator = require('validatorjs');
 const bcrypt = require('bcryptjs');
