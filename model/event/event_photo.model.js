@@ -16,10 +16,10 @@ module.exports = (sequelize, Sequelize) => {
         photo: {
             type: Sequelize.TEXT,
             allowNull: false,
-            // get() {
-            //     const rawValue = this.getDataValue('photo');
-            //     return rawValue ? ASSETS.getProfileUrl(rawValue) : null;
-            // }
+            get() {
+                const rawValue = this.getDataValue('photo');
+                return rawValue ? ASSETS.getMediaUrl(rawValue, "event_images") : null;
+            }
         },
         createdAt: {
             field: 'created_at',

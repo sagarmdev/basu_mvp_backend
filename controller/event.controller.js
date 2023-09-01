@@ -1,6 +1,6 @@
 const Validator = require("validatorjs");
 const db = require('../config/db.config');
-const { imageUpload } = require('../helpers/file')
+const { UploadFiles } = require('../helpers/file')
 
 
 //...................models............
@@ -87,10 +87,9 @@ const createEvent = async (req, res) => {
 
             let photos = [];
             if (typeof req.files !== 'undefined' && req.files.length > 0) {
-                photos = await imageUpload(req.files, 'images/roommate_media');
+                photos = await UploadFiles(req.files, 'images/event_images', 'image');
             }
             for (const image of photos) {
-                
                 await Event_photos.create({
                     event_id: event.id,
                     photo: image

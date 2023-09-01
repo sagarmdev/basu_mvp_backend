@@ -6,10 +6,10 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             primaryKey: true,
         },
-        media_type: {
-            type: Sequelize.INTEGER,
-            enum: [1, 2], //1 = photo , 2 = video
-        },
+        // media_type: {
+        //     type: Sequelize.INTEGER,
+        //     enum: [1, 2], //1 = photo , 2 = video
+        // },
         roommate_id: {
             type: Sequelize.BIGINT.UNSIGNED,
             references: {
@@ -17,22 +17,22 @@ module.exports = (sequelize, Sequelize) => {
                 key: 'id'
             }
         },
-        photo: {
+        media: {
             type: Sequelize.TEXT,
             allowNull: true,
-            // get() {
-            //     const rawValue = this.getDataValue('photo');
-            //     return rawValue ? ASSETS.getProfileUrl(rawValue) : null;
-            // }
+            get() {
+                const rawValue = this.getDataValue('media');
+                return rawValue ? ASSETS.getMediaUrl(rawValue, "roommate_media") : null;
+            }
         },
-        video: {
-            type: Sequelize.TEXT,
-            allowNull: true,
-            // get() {
-            //     const rawValue = this.getDataValue('video');
-            //     return rawValue ? ASSETS.getProfileUrl(rawValue) : null;
-            // }
-        },
+        // video: {
+        //     type: Sequelize.TEXT,
+        //     allowNull: true,
+        //     // get() {
+        //     //     const rawValue = this.getDataValue('video');
+        //     //     return rawValue ? ASSETS.getProfileUrl(rawValue) : null;
+        //     // }
+        // },
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,

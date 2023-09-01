@@ -11,7 +11,7 @@ router.get('/get-event-categories', Auth.authUser,eventController.getAllEventCat
 
 router.get('/get-event-amenities', Auth.authUser, eventController.getAllEventAmenities);
 
-router.post('/create-event', Auth.authUser, eventController.createEvent) //
+router.post('/create-event', Auth.authUser, eventController.createEvent) 
 
 
 

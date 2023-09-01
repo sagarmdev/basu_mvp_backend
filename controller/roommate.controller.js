@@ -9,7 +9,7 @@ const Roommate_social = db.roommate_socials;
 const Roommate_interests = db.roommate_interests;
 const SelectedSocial = db.selectedSocials
 const SelectedInterest = db.selectedInterest
-const { uploadRoommateFiles } = require('../helpers/file')
+const { uploadRoommateFiles, UploadFiles } = require('../helpers/file')
 
 
 //...............add roommate...............
@@ -46,8 +46,17 @@ const addRoommate = async (req, res) => {
 
         const authUser = req.user
 
-        const addRoommate = await Roommate.create({ city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathroom, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, other, message })
+        let photo = [];
+        if (typeof req.files !== 'undefined' && req.files.length > 0) {
 
+            const data = req.files.filter((item) => item.fieldname == "image")
+            if (data.length != 1) {
+                return RESPONSE.error(res, 2202)
+            }
+            photo = await UploadFiles(data, 'images/roommate_media', 'image');
+        }
+
+        const addRoommate = await Roommate.create({ image: photo[0], city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathroom, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, other, message })
         if (addRoommate) {
 
             for (const selectedInterest of interest_id) {
@@ -71,29 +80,19 @@ const addRoommate = async (req, res) => {
             }
 
             for (const image of mediaUrl) {
-                if (image.media_type == 1) {
-                    await Roommate_media.create({
-                        media_type: image.media_type,
-                        roommate_id: addRoommate.id,
-                        photo: image.roommate_media,
-                    })
-                } else {
-                    await Roommate_media.create({
-                        media_type: video.media_type,
-                        roommate_id: addRoommate.id,
-                        video: video.roommate_media,
-                    })
-                }
+                await Roommate_media.create({
+                    roommate_id: addRoommate.id,
+                    media: image,
+                })
             }
         }
-
 
         const findRoommate = await Roommate.findOne({
             where: { id: addRoommate.id },
             include: [
                 {
                     model: Roommate_media,
-                    attributes: ['photo', 'video', 'id']
+                    attributes: ['media', 'id']
                 },
 
                 {

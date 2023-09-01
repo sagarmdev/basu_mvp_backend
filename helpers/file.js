@@ -41,9 +41,9 @@ function videoUpload(fileObjArray, pathFolder = "video") {
 
 function uploadRoommateFiles(fileObjArray, pathFolder = "roommate_media") {
     let imagearr = [];
-    
+
     for (let index = 0, len = fileObjArray.length; index < len; ++index) {
-        if (fileObjArray[index].fieldname === "photos" || fileObjArray[index].fieldname === "videos") {
+        if (fileObjArray[index].fieldname === "media") {
 
             const roommate_media = uid(16) + path.extname(fileObjArray[index].originalname);
             const uploadPath = "./public/" + pathFolder + "/" + roommate_media;
@@ -51,20 +51,34 @@ function uploadRoommateFiles(fileObjArray, pathFolder = "roommate_media") {
             outStream.write(fileObjArray[index].buffer);
             outStream.end();
 
-            let data = { roommate_media }
+            // let data = { roommate_media }
+            // if (fileObjArray[index].fieldname === "photos") {
+            //     data.media_type = 1
+            // } else {
+            //     data.media_type = 2
+            // }
 
-            if (fileObjArray[index].fieldname === "photos") {
-                data.media_type = 1
-            } else {
-                data.media_type = 2
-            }
+            imagearr.push(roommate_media);
+        }
+    }
+    return imagearr;
+}
 
-            imagearr.push(data);
+function UploadFiles(fileObjArray, pathFolder = "images", fieldname) {
+    let imagearr = [];
+    for (let index = 0, len = fileObjArray.length; index < len; ++index) {
+        if (fileObjArray[index].fieldname === fieldname) {
+            const image = uid(16) + path.extname(fileObjArray[index].originalname);
+            const uploadPath = "./public/" + pathFolder + "/" + image;
+            const outStream = fs.createWriteStream(uploadPath);
+            outStream.write(fileObjArray[index].buffer);
+            outStream.end();
+
+            imagearr.push(image);
         }
     }
     return imagearr;
 }
 
 
-
-module.exports = { imageUpload, videoUpload, uploadRoommateFiles };
+module.exports = { imageUpload, videoUpload, uploadRoommateFiles, UploadFiles };

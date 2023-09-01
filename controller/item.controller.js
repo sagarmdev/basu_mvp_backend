@@ -1,12 +1,13 @@
 const Validator = require("validatorjs");
 const db = require('../config/db.config');
 const { Op } = require('sequelize')
+const { UploadFiles } = require('../helpers/file')
+
 
 //...................models............
 const Item_categories = db.items_categories;
 const Items = db.items;
 const Items_photos = db.item_photos;
-const { imageUpload } = require('../helpers/file')
 
 
 //.......................get All Items_categories.......
@@ -55,12 +56,11 @@ const addItem = async (req, res) => {
 
         //..................upload photo....
         if (itemData) {
-            
+
             let photos = [];
             if (typeof req.files !== 'undefined' && req.files.length > 0) {
-                photos = await imageUpload(req.files, 'images/roommate_media');
+                photos = await UploadFiles(req.files, 'images/item_images', 'mediaImg');
             }
-
             for (const image of photos) {
                 await Items_photos.create({
                     items_id: itemData.id,
@@ -123,7 +123,17 @@ const getAllRentAndSale = async (req, res) => {
         }
 
         const findAllData = await Items.findAll({
-            where: condition
+            where: condition,
+            include: [
+                {
+                    model: Items_photos,
+                    attributes: ['photo', 'id']
+                },
+                {
+                    model: Item_categories,
+                    attributes: ['name', 'id']
+                },
+            ],
         });
 
         if (!findAllData.length) {
@@ -139,6 +149,7 @@ const getAllRentAndSale = async (req, res) => {
 
 
 //...........................get Rent and Sale by id...............
+
 const getRentAndSaleById = async (req, res) => {
     let validation = new Validator(req.query, {
         item_type: 'required|in:Rent,Sale',
@@ -152,7 +163,20 @@ const getRentAndSaleById = async (req, res) => {
     try {
         const { item_type, id } = req.query;
 
-        const findData = await Items.findOne({ where: { id: id, item_type: item_type } })
+        const findData = await Items.findOne(
+            {
+                where: { id: id, item_type: item_type },
+                include: [
+                    {
+                        model: Items_photos,
+                        attributes: ['photo', 'id']
+                    },
+                    {
+                        model: Item_categories,
+                        attributes: ['name', 'id']
+                    },
+                ],
+            })
 
         if (!findData) {
             return RESPONSE.error(res, 2105);

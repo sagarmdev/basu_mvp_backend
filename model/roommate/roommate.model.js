@@ -78,6 +78,14 @@ module.exports = (sequelize, Sequelize) => {
             enum: ['12-18 Year', '18-35 Year', '35-50 Year'],
             allowNull: false
         },
+        image: {
+            type: Sequelize.TEXT,
+            allowNull: true,
+            get() {
+                const rawValue = this.getDataValue('image');
+                return rawValue ? ASSETS.getMediaUrl(rawValue, "roommate_media") : null;
+            }
+        },
         other: {
             type: Sequelize.STRING,
             allowNull: false,

@@ -7,6 +7,7 @@ const fileUpload = require("express-fileupload");
 const config = require('./config/config')
 const multer = require('multer')
 const upload = multer();
+const path = require('path')
 
 
 app.use(upload.any())
@@ -14,6 +15,7 @@ app.use(cors());
 // app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname,'public')))
 
 //user routes
 const userRoutes = require('./routes/index.js')

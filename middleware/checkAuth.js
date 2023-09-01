@@ -7,7 +7,7 @@ const moment = require('moment');
 // user authentication
 const authUser = async (req, res, next) => {
     const headerToken = req.headers.authorization ? req.headers.authorization : null;
-    if (!headerToken || !headerToken.startsWith("Bearer ")) {
+    if (!headerToken || !headerToken.startsWith("Bearer")) {
         return RESPONSE.error(res, 1009);
     }
 
