@@ -32,6 +32,8 @@ const MESSAGES = {
     //roommate
     '2201': 'Add roommate  successfully..',
     '2202': 'You can upload only one image',
+    '2203': 'Get roommate successfully',
+    '2204': 'roommate data not found',
 
 }
 

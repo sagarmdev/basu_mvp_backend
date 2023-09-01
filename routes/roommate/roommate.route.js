@@ -7,7 +7,11 @@ const Auth = require('../../middleware/checkAuth')
 const RoommateController = require('../../controller/roommate.controller');
 
 
-router.post('/add-room-mate',Auth.authUser,RoommateController.addRoommate); 
+router.post('/add-room-mate', Auth.authUser, RoommateController.addRoommate);
+
+router.get('/get-all-room-mate', Auth.authUser, RoommateController.getAllRoommate);
+
+router.get('/get-room-mate-by-id', Auth.authUser, RoommateController.getRoommateById);
 
 
 

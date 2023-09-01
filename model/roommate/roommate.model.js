@@ -46,13 +46,21 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
         minimum_stay: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER,
             allowNull: false
         },
-        bathroom: {
-            type: Sequelize.STRING,
+        bedrooms: {
+            type: Sequelize.INTEGER,
             allowNull: false,
-            enum: ['Yes', 'No']
+            
+        },
+        bathrooms: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
+        },
+        no_of_roommates: {
+            type: Sequelize.INTEGER,
+            allowNull: false,
         },
         required_roommate: {
             type: Sequelize.INTEGER,
@@ -86,11 +94,7 @@ module.exports = (sequelize, Sequelize) => {
                 return rawValue ? ASSETS.getMediaUrl(rawValue, "roommate_media") : null;
             }
         },
-        other: {
-            type: Sequelize.STRING,
-            allowNull: false,
-            enum: ['Pet Friendly', 'Non-smoker']
-        },
+        
         message: {
             type: Sequelize.STRING,
             allowNull: false,

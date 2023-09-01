@@ -52,7 +52,8 @@ db.roommate = require('../model/roommate/roommate.model')(sequelize, Sequelize);
 db.roommate_media = require('../model/roommate/roommate_media.model')(sequelize, Sequelize)
 db.selectedInterest = require('../model/roommate/selected_interest.model')(sequelize, Sequelize);
 db.selectedSocials = require('../model/roommate/selected_social.model')(sequelize, Sequelize);
-
+db.lifestyle = require('../model/roommate/lifestyle.model')(sequelize, Sequelize);
+db.selectedLifestyle = require('../model/roommate/selected_lifestyle.model')(sequelize, Sequelize);
 
 //..........................relation...............
 
@@ -93,11 +94,20 @@ db.selectedInterest.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
 db.roommate.hasMany(db.selectedSocials, { foreignKey: 'roommate_id' });
 db.selectedSocials.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
 
+db.roommate.hasMany(db.selectedLifestyle, { foreignKey: 'roommate_id' });
+db.selectedLifestyle.belongsTo(db.roommate, { foreignKey: 'roommate_id' })
+
 db.roommate_interests.hasMany(db.selectedInterest, { foreignKey: 'interest_id' });
 db.selectedInterest.belongsTo(db.roommate_interests, { foreignKey: 'interest_id' });
 
 db.roommate_socials.hasMany(db.selectedSocials, { foreignKey: 'social_id' });
 db.selectedSocials.belongsTo(db.roommate_socials, { foreignKey: 'social_id' });
+
+
+db.lifestyle.hasMany(db.selectedLifestyle, { foreignKey: 'lifestyle_id' });
+db.selectedLifestyle.belongsTo(db.lifestyle, { foreignKey: 'lifestyle_id' })
+
+
 
 db.sequelize.sync({ force: false });
 
