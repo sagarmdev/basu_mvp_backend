@@ -55,6 +55,7 @@ const addItem = async (req, res) => {
 
         //..................upload photo....
         if (itemData) {
+            
             let photos = [];
             if (typeof req.files !== 'undefined' && req.files.length > 0) {
                 photos = await imageUpload(req.files, 'images/roommate_media');

@@ -87,6 +87,7 @@ const addRoommate = async (req, res) => {
             }
         }
 
+        
         const findRoommate = await Roommate.findOne({
             where: { id: addRoommate.id },
             include: [

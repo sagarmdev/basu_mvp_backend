@@ -24,6 +24,7 @@ function imageUpload(fileObjArray, pathFolder = "image") {
 
 function uploadRoommateFiles(fileObjArray, pathFolder = "roommate_media") {
     let imagearr = [];
+    
     for (let index = 0, len = fileObjArray.length; index < len; ++index) {
         if (fileObjArray[index].fieldname === "photos" || fileObjArray[index].fieldname === "videos") {
 

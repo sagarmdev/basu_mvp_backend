@@ -77,9 +77,7 @@ const createEvent = async (req, res) => {
 
         if (event) {
 
-            const amenitiesData = event_amenities_id;
-
-            for (selectedData of amenitiesData) {
+            for (selectedData of event_amenities_id) {
 
                 await Selected_amenities.create({
                     event_amenities_id: selectedData,
@@ -92,6 +90,7 @@ const createEvent = async (req, res) => {
                 photos = await imageUpload(req.files, 'images/roommate_media');
             }
             for (const image of photos) {
+                
                 await Event_photos.create({
                     event_id: event.id,
                     photo: image
@@ -131,6 +130,7 @@ const createEvent = async (req, res) => {
         return RESPONSE.error(res, error.message);
     }
 }
+
 
 
 module.exports = {
