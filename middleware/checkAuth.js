@@ -7,9 +7,15 @@ const moment = require('moment');
 // user authentication
 const authUser = async (req, res, next) => {
     const headerToken = req.headers.authorization ? req.headers.authorization : null;
+    if (!headerToken || !headerToken.startsWith("Bearer ")) {
+        return RESPONSE.error(res, 1009);
+    }
+
+    const token = headerToken.split(" ")[1];
+    // console.log('token', token)
     const isAuth = await UserSession.findOne({
         where: {
-            token: headerToken
+            token: token
         }
     });
 
@@ -17,7 +23,7 @@ const authUser = async (req, res, next) => {
         if (isAuth.expire_timestamp + 360000 < moment().unix()) {
             await UserSession.destroy({
                 where: {
-                    token: headerToken
+                    token: token
                 }
             });
             return res.status(401).json({
@@ -29,7 +35,7 @@ const authUser = async (req, res, next) => {
                 expire_timestamp: moment().unix()
             }, {
                 where: {
-                    token: headerToken
+                    token: token
                 }
             });
             let users = await Users.findOne({

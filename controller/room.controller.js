@@ -5,14 +5,14 @@ const roomAmenitie = db.room_amenities;
 const Media = db.media;
 const roomRules = db.room_rules;
 const Room = db.rooms;
-const imageUpload = require('../helpers/file')
+// const imageUpload = require('../helpers/file')
+// const videoUpload = require('../helpers/file')
 
 const addRooms = async (req, res) => {
     try {
         const authUser = req.user.id;
         const {
             title,
-            // mediaUrl,
             description,
             roomType,
             bedRooms,
@@ -35,35 +35,36 @@ const addRooms = async (req, res) => {
 
         // if aminities is not in array formate then throw error
         if (amenities && amenities.length < 0) {
-            return RESPONSE.error(res, 1110)
+            return RESPONSE.error(res, 1103)
         }
 
         // if rules is not in array formate then throw error
         if (rules && rules.length < 0) {
-            return RESPONSE.error(res, 1110)
+            return RESPONSE.error(res, 1103)
         }
 
         // upload image on server and get path for store in database
 
         // console.log('mediaUrl', mediaUrl)
-        console.log(req.files);
-        let mediaUrl;
+        // console.log(req.files);
+        let mediaImg;
         if (typeof req.files !== 'undefined' && req.files.length > 0) {
             if (req.files[0].fieldname == 'mediaUrl') {
-                mediaUrl = await imageUpload(req.files, 'image');
+                mediaImg = await FILEACTION.imageUpload(req.files, 'image');
             }
         }
-        // if (!mediaUrl || mediaUrl.length === 0) {
-        //     return RESPONSE.error(res, 1110);
-        // }
 
-
+        let mediaVideo;
+        if (typeof req.files !== 'undefined' && req.files.length > 0) {
+            if (req.files[0].fieldname == 'mediaVideo') {
+                mediaVideo = await FILEACTION.videoUpload(req.files, 'video');
+            }
+        }
 
         const newRoom = await Room.create({
             user_id: authUser,
             title,
             description,
-            // mediaUrl: mediaUrl,
             roomType,
             bedRooms,
             bathRooms,
@@ -78,7 +79,7 @@ const addRooms = async (req, res) => {
             extraBills,
             city,
             lat,
-            lng
+            lng,
         });
         let responseData = null;
         responseData = newRoom.toJSON();
@@ -120,28 +121,42 @@ const addRooms = async (req, res) => {
         }
 
 
+        let mediaData = [];
 
-        // if image found in request data then update cover_image and  workspace_image
         if (typeof req.files !== 'undefined' && req.files.length > 0) {
+            const isWorkspaceImg = req.files.some((item) => item.fieldname === 'mediaImg');
+            const isWorkspaceVideo = req.files.some((item) => item.fieldname === 'mediaVideo');
 
-            // check for workspace_image and cover_image, data is in request data or not
-            const isWorkspaceImg = req.files.some((item) => item.fieldname == 'mediaUrl')
-            console.log('isWorkspaceImg', isWorkspaceImg)
-            // console.log('isWorkspaceImg', isWorkspaceImg)
-            // if workspace image found then store
-            if (isWorkspaceImg) {
-                const workspace_imageArr = await imageUpload(req.files, 'image');
-                console.log('workspace_imageArr', workspace_imageArr)
+            if (isWorkspaceImg || isWorkspaceVideo) {
+                let workspace_imageArr = [];
 
-                const workspace_imagesData = workspace_imageArr.map((item) => ({
-                    roomId: newRoom.id,
-                    url: item
-                }));
-                // console.log('workspace_imagesData', workspace_imagesData)
-                const createWorkspaceImage = await Media.bulkCreate(workspace_imagesData, {
-                    returning: true
-                });
-                responseData.media = createWorkspaceImage;
+                if (isWorkspaceImg) {
+                    workspace_imageArr = await FILEACTION.imageUpload(req.files, 'image');
+                    const mediaDataImg = workspace_imageArr.map((item) => ({
+                        type: 1, // image
+                        roomId: newRoom.id,
+                        url: item
+                    }));
+                    mediaData.push(...mediaDataImg);
+                }
+
+                if (isWorkspaceVideo) {
+                    workspace_imageArr = await FILEACTION.videoUpload(req.files, 'video');
+                    const mediaDataVideo = workspace_imageArr.map((item) => ({
+                        type: 2, // video
+                        roomId: newRoom.id,
+                        url: item
+                    }));
+                    mediaData.push(...mediaDataVideo);
+                }
+
+                if (mediaData.length > 0) {
+                    const createMedia = await Media.bulkCreate(mediaData, {
+                        returning: true
+                    });
+
+                    responseData.media = createMedia;
+                }
             }
         }
 

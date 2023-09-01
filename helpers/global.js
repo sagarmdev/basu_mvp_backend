@@ -10,8 +10,8 @@ if (!global.FILEACTION)
     global.FILEACTION = require('./file.js');
 
 // Provide assets url functions
-// if (!global.ASSETS)
-//     global.ASSETS = require('./assets.js');
+if (!global.ASSETS)
+    global.ASSETS = require('./assets.js');
 
 // if (!global.getAuthUser)
 //     global.getAuthUser = async function (req) {

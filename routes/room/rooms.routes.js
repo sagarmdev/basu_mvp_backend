@@ -1,6 +1,6 @@
 const router = require('express').Router()
 
-const roomController = require('../../controller/addRoom.controller');
+const roomController = require('../../controller/room.controller');
 const roomTypeController = require('../../controller/roomType.controller');
 
 const checkAuth = require('../../middleware/checkAuth')

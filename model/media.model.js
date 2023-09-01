@@ -18,13 +18,13 @@ module.exports = (sequelize, Sequelize) => {
         url: {
             type: Sequelize.STRING(200),
             allowNull: true,
-            // get() {
-            //     const rawValue = this.getDataValue('imageName');
-            //     return rawValue ? ASSETS.getProfileUrl(rawValue, "media") : null;
-            // }
+            get() {
+                const rawValue = this.getDataValue('url');
+                return rawValue ? ASSETS.getProfileUrl(rawValue, "media") : null;
+            }
         },
         type: {
-            type: Sequelize.INTEGER(11), // 1=image 2=video
+            type: Sequelize.INTEGER(1), // 1=image 2=video
         },
         createdAt: {
             field: 'created_at',

@@ -8,11 +8,12 @@ const MESSAGES = {
     '1006': "Reset password email has been successfully sent",
     '1007': "Invalid reset token",
     '1008': "Password reset successful",
+    '1009': "Invaild token",
 
     //ROOM
     '1101': "Added room successfully",
     '1102': "get all Room types",
-    '1110': "data null",
+    '1103': "data null",
 
     //event 
     '2001': 'Get event categories successfully.',
