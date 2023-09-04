@@ -1,6 +1,7 @@
 const Validator = require("validatorjs");
 const db = require('../config/db.config');
 const { Op } = require('sequelize')
+const { Sequelize } = require('sequelize')
 
 //...................models............
 const Roommate = db.roommate;
@@ -133,6 +134,7 @@ const addRoommate = async (req, res) => {
                 {
                     model: SelectedLifestyle,
                     attributes: ['lifestyle_id', 'id'],
+                    as: 'selectedLifestyles',
                     include: [
                         {
                             model: Lifestyle,
@@ -203,11 +205,8 @@ const getAllRoommate = async (req, res) => {
         if (gender) {
             if (gender == "Both") {
                 condition.gender = { [Op.in]: ['Male', 'Female'] }
-                console.log("ok1");
             } else {
                 condition.gender = gender
-                console.log(condition.gender);
-                console.log("ok");
             }
         }
 
@@ -216,8 +215,13 @@ const getAllRoommate = async (req, res) => {
         }
 
         if (lifestyle) {
-            lifeStyleCondition.lifestyle_id = { [Op.in]: lifestyle }
+            lifeStyleCondition.lifestyle_id = { [Op.in]: lifestyle };
         }
+        else {
+            lifeStyleCondition
+        }
+
+
 
         const findData = await Roommate.findAll({
             where: condition,
@@ -235,19 +239,7 @@ const getAllRoommate = async (req, res) => {
                         }
                     ],
                 },
-                // {
-                //     model: SelectedLifestyle,
-                //     attributes: ['lifestyle_id', 'id'],
-                //     include: [
-                //         {
-                //             model: Lifestyle,
-                //             attributes: ['name', 'id']
-                //         }
-                //     ],
-                // },
             ]
-
-
         });
 
 
@@ -261,6 +253,9 @@ const getAllRoommate = async (req, res) => {
         return RESPONSE.error(res, error.message);
     }
 }
+
+
+
 
 
 //.................get roommate by id........................

@@ -10,14 +10,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
-        // non_smoker: {
-        //     type: Sequelize.STRING,
-        //     allowNull: false
-        // },
-        // pet_friendly:{
-        //     type: Sequelize.STRING,
-        //     allowNull: false
-        // },
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,
