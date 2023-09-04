@@ -7,11 +7,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             primaryKey: true,
         },
-        firstName: {
-            type: Sequelize.STRING(200),
-            allowNull: true,
-        },
-        lastName: {
+        name: {
             type: Sequelize.STRING(200),
             allowNull: true,
         },
@@ -46,10 +42,10 @@ module.exports = (sequelize, Sequelize) => {
         picture: {
             type: Sequelize.STRING(255),
             allowNull: true,
-            // get() {
-            //     const rawValue = this.getDataValue('profile_url');
-            //     return rawValue ? ASSETS.getProfileUrl(rawValue) : null;
-            // }
+            get() {
+                const rawValue = this.getDataValue('picture');
+                return typeof rawValue === 'string' ? ASSETS.getProfileUrl(rawValue) : null;
+            }
         },
         active: {
             type: Sequelize.INTEGER(2),
@@ -57,15 +53,13 @@ module.exports = (sequelize, Sequelize) => {
             defaultValue: 1,
         },
         generateOtp: {
-            type: Sequelize.STRING, // Use the appropriate data type
+            type: Sequelize.STRING,
             allowNull: true,
         },
         resetTokenExpiry: {
-            type: Sequelize.DATE, // Use the appropriate data type
+            type: Sequelize.DATE,
             allowNull: true,
         },
-
-
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,

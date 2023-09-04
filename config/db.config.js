@@ -60,6 +60,15 @@ db.selectedLifestyle = require('../model/roommate/selected_lifestyle.model')(seq
 // db.rooms.hasMany(db.room_amenities, { foreignKey: 'amenitieId' });
 // db.room_amenities.belongsTo(db.rooms, { foreignKey: 'amenitieId' });
 
+db.media.belongsTo(db.rooms, { foreignKey: "roomId" });
+db.rooms.hasMany(db.media, { foreignKey: "roomId" });
+
+db.room_amenities.belongsTo(db.rooms, { foreignKey: "roomId", as: 'roomAmenities' });
+db.rooms.hasMany(db.room_amenities, { foreignKey: "roomId", as: 'roomAmenities' });
+
+db.room_rules.belongsTo(db.rooms, { foreignKey: 'roomId', as: 'roomRules' });
+db.rooms.hasMany(db.room_rules, { foreignKey: 'roomId', as: 'roomRules' });
+
 
 //event 
 db.event.hasMany(db.event_photos, { foreignKey: 'event_id' });

@@ -14,6 +14,8 @@ const MESSAGES = {
     '1101': "Added room successfully",
     '1102': "get all Room types",
     '1103': "data null",
+    '1104': "get all rooms",
+    '1105': "Data not found!",
 
     //event 
     '2001': 'Get event categories successfully.',

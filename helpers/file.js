@@ -36,7 +36,35 @@ function videoUpload(fileObjArray, pathFolder = "video") {
     }
     return imagearr;
 }
+function isArrayDefine(fileObjArray) {
+    if (typeof fileObjArray !== 'undefined' && fileObjArray.length > 0) {
+        return true;
+    }
+    return false;
+}
 
+
+function uploadProfileImage(fileObjArray, pathFolder = "profile_image") {
+    let profileImage = null;
+    // console.log(fileObjArray);
+    for (let index = 0, len = fileObjArray.length; index < len; ++index) {
+        if (fileObjArray[index].fieldname == 'picture') {
+            if (isArrayDefine(fileObjArray)) {
+                profileImage = uid(16) + path.extname(fileObjArray[index].originalname);
+                let uploadPath = './public/' + pathFolder + '/' + profileImage;
+                if (!fs.existsSync('./public/' + pathFolder)) {
+                    fs.mkdirSync('./public/' + pathFolder, {
+                        recursive: true
+                    });
+                }
+                let outStream = fs.createWriteStream(uploadPath);
+                outStream.write(fileObjArray[0].buffer);
+                outStream.end();
+            }
+        }
+    }
+    return profileImage;
+}
 
 
 function uploadRoommateFiles(fileObjArray, pathFolder = "roommate_media") {
@@ -81,4 +109,4 @@ function UploadFiles(fileObjArray, pathFolder = "images", fieldname) {
 }
 
 
-module.exports = { imageUpload, videoUpload, uploadRoommateFiles, UploadFiles };
+module.exports = { imageUpload, videoUpload, uploadProfileImage, uploadRoommateFiles, UploadFiles };

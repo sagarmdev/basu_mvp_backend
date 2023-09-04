@@ -30,10 +30,6 @@ module.exports = (sequelize, Sequelize) => {
                 key: 'id'
             }
         },
-        // mediaUrl: {
-        //     type: Sequelize.STRING(500),
-        //     allowNull: true,
-        // },
         bedRooms: {
             type: Sequelize.INTEGER(50),
             // defaultValue: 1,
@@ -48,35 +44,35 @@ module.exports = (sequelize, Sequelize) => {
             // defaultValue: 1,
         },
         liveWith: {
-            type: Sequelize.INTEGER(3), //1=both 2=male 3=female  
-        },
-        houseRule: {
-            type: Sequelize.BIGINT.UNSIGNED,
-            references: {
-                model: 'houseRules',
-                key: 'id'
-            }
+            type: Sequelize.STRING,
+            enum: ['Other', 'Male', 'Female'],
+            allowNull: false
         },
         prefereOccupation: {
-            type: Sequelize.INTEGER(3), //1=student 2=employee 3=worker  
+            type: Sequelize.STRING,
+            enum: ['Student', 'Employee', 'Worker'],
+            allowNull: false
         },
         availibility: {
             type: Sequelize.DATE,
         },
         monthlyRent: {
-            type: Sequelize.STRING(200),
+            type: Sequelize.INTEGER,
             allowNull: true,
+            default: null
         },
         minimumStay: {
-            type: Sequelize.STRING(200),
+            type: Sequelize.INTEGER,
             allowNull: true,
         },
         roomSize: {
-            type: Sequelize.STRING(200),
+            type: Sequelize.INTEGER,
             allowNull: true,
         },
         extraBills: {
-            type: Sequelize.BOOLEAN,
+            type: Sequelize.STRING,
+            enum: ['Included'],
+            allowNull: false
         },
         city: {
             type: Sequelize.STRING(200),

@@ -9,6 +9,31 @@ const Room = db.rooms;
 // const videoUpload = require('../helpers/file')
 
 const addRooms = async (req, res) => {
+    //validation
+    let validation = new Validator(req.body, {
+        title: 'required|string',
+        description: 'required|string',
+        roomType: 'required',
+        bedRooms: 'required',
+        bathRooms: 'required',
+        tenant: 'required',
+        liveWith: 'required|in:Both,Male,Female',
+        amenities: 'required',
+        rules: 'required',
+        prefereOccupation: 'required|in:Student,Employee,Worker',
+        availibility: 'required',
+        monthlyRent: 'required|numeric',
+        minimumStay: 'required|numeric',
+        roomSize: 'required|numeric',
+        city: 'required|string',
+        lat: 'required',
+        lng: 'required',
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+
     try {
         const authUser = req.user.id;
         const {
@@ -21,7 +46,6 @@ const addRooms = async (req, res) => {
             liveWith,
             amenities,
             rules,
-            houseRule,
             prefereOccupation,
             availibility,
             monthlyRent,
@@ -70,7 +94,6 @@ const addRooms = async (req, res) => {
             bathRooms,
             tenant,
             liveWith,
-            houseRule,
             prefereOccupation,
             availibility,
             monthlyRent,
@@ -135,7 +158,7 @@ const addRooms = async (req, res) => {
                     const mediaDataImg = workspace_imageArr.map((item) => ({
                         type: 1, // image
                         roomId: newRoom.id,
-                        url: item
+                        url: `/image/${item}`
                     }));
                     mediaData.push(...mediaDataImg);
                 }
@@ -145,7 +168,7 @@ const addRooms = async (req, res) => {
                     const mediaDataVideo = workspace_imageArr.map((item) => ({
                         type: 2, // video
                         roomId: newRoom.id,
-                        url: item
+                        url: `/video/${item}`
                     }));
                     mediaData.push(...mediaDataVideo);
                 }
@@ -169,7 +192,126 @@ const addRooms = async (req, res) => {
 
 }
 
+const getAllRooms = async (req, res) => {
+    let validation = new Validator(req.query, {
+        // item_type: 'required|in:Roommate,Housemate',
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+    try {
+        const { city, bedRooms, bathRooms, tenant, availibility, minimumStay, liveWith, max_budget, min_budget } = req.query;
+        let condition = {}
+        if (Object.keys(req.query).length === 0) {
+            const rooms = await Room.findAll();
+            return RESPONSE.success(res, 1104, rooms);
+        }
+
+        if (city) {
+            condition.city = city;
+        }
+
+        if (bedRooms) {
+            condition.bedRooms = bedRooms;
+        }
+
+        if (bathRooms) {
+            condition.bathRooms = bathRooms;
+        }
+
+        if (tenant) {
+            condition.tenant = tenant;
+        }
+
+        if (min_budget && max_budget) {
+            condition.monthlyRent = { [Op.gte]: min_budget, [Op.lte]: max_budget }
+        }
+
+        if (availibility) {
+            condition.availibility = { [Op.gte]: new Date(availibility) };
+        }
+
+        if (minimumStay) {
+            condition.minimumStay = { [Op.lte]: parseInt(minimumStay) };
+        }
+
+        if (liveWith) {
+            condition.liveWith = liveWith;
+        }
+
+        const rooms = await Room.findAll({
+            where: condition,
+            include: [
+                {
+                    model: Media,
+                    as: 'media',
+                },
+                {
+                    model: roomAmenitie,
+                    as: 'roomAmenities',
+                },
+                {
+                    model: roomRules,
+                    as: 'roomRules',
+                },
+            ],
+        });
+
+        if (!rooms.length) {
+            return RESPONSE.error(res, 1105);
+        }
+
+        return RESPONSE.success(res, 1104, rooms);
+
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+const getAllRoomsById = async (req, res) => {
+    let validation = new Validator(req.query, {
+        id: 'required',
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+    try {
+        const { id } = req.query;
+
+        const rooms = await Room.findByPk(id, {
+            include: [
+                {
+                    model: Media,
+                    as: 'media',
+                },
+                {
+                    model: roomAmenitie,
+                    as: 'roomAmenities',
+                },
+                {
+                    model: roomRules,
+                    as: 'roomRules',
+                },
+            ],
+        });
+
+        if (!rooms) {
+            return RESPONSE.error(res, 1105);
+        }
+
+        return RESPONSE.success(res, 1104, rooms);
+
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
 
 module.exports = {
-    addRooms
+    addRooms,
+    getAllRooms,
+    getAllRoomsById
 }

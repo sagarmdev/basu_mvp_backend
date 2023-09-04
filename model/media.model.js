@@ -20,7 +20,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true,
             get() {
                 const rawValue = this.getDataValue('url');
-                return rawValue ? ASSETS.getProfileUrl(rawValue, "media") : null;
+                return rawValue ? ASSETS.getProfileUrl(rawValue) : null;
             }
         },
         type: {

@@ -14,7 +14,7 @@ const UserSession = db.user_sessions;
 const signUp = async (req, res) => {
     try {
         let validation = new Validator(req.body, {
-            firstName: 'required',
+            name: 'required',
             email: 'required',
             password: 'required',
         });
@@ -23,7 +23,7 @@ const signUp = async (req, res) => {
             firstMessage = Object.keys(validation.errors.all())[0];
             return RESPONSE.error(res, validation.errors.first(firstMessage), '', 400);
         }
-        const { firstName, email, password } = req.body;
+        const { name, email, password } = req.body;
 
         const existingUser = await Users.findOne({ where: { email: email } });
 
@@ -34,7 +34,7 @@ const signUp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await Users.create({
-            firstName,
+            name,
             email,
             password: hashedPassword,
         });
@@ -118,6 +118,13 @@ const login = async (req, res) => {
 // }
 
 const forgotPassword = async (req, res, next) => {
+    let validation = new Validator(req.body, {
+        email: 'required',
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
     try {
         const { email } = req.body;
         const user = await Users.findOne({ where: { email } });
@@ -218,8 +225,33 @@ const resetPassword = async (req, res, next) => {
     }
 };
 
+const updateProfile = async (req, res) => {
+    try {
+        const { user: { id }, body } = req;
+        // console.log(req.files);
+        const user = await Users.findByPk(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        if (typeof req.files !== 'undefined' && req.files.length > 0) {
+            const profileImage = await FILEACTION.uploadProfileImage(req.files, 'profile_image');
+            // console.log(profileImage)
+            req.body.picture = `/profile_image/${profileImage}`
+        }
+        await Users.update(body, {
+            where: { id: id }, // Provide the where condition with the user's id
+        });
+        // Refresh the user object after update
+        const updatedUser = await Users.findByPk(id);
+        return RESPONSE.success(res, 1007, updatedUser);
+    } catch (error) {
+        console.log(error);
+        return RESPONSE.error(res, error.message);
+    }
+}
 
 
-module.exports = { signUp, login, forgotPassword, resetPassword };
+
+module.exports = { signUp, login, forgotPassword, resetPassword, updateProfile };
 
 
