@@ -269,6 +269,7 @@ const getAllRooms = async (req, res) => {
         return RESPONSE.error(res, error.message);
     }
 }
+
 const getAllRoomsById = async (req, res) => {
     let validation = new Validator(req.query, {
         id: 'required',

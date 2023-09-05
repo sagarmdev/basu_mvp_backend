@@ -21,4 +21,9 @@ const roommateRoutes = require('./roommate/roommate.route');
 router.use('/roommate', roommateRoutes);
 
 
+//save post
+const savePostRoutes = require('./savepost/savePost.routes');
+router.use('/savepost', savePostRoutes);
+
+
 module.exports = router;

@@ -5,7 +5,7 @@ const checkAuth = require('../../middleware/checkAuth')
 
 router.post("/signup", authController.signUp);
 router.post("/login", authController.login);
-router.put("/update-profile", checkAuth.authUser, authController.updateProfile);
+router.patch("/update-profile", checkAuth.authUser, authController.updateProfile);
 
 // reset resetPassword
 router.post("/forgotPassword", authController.forgotPassword);

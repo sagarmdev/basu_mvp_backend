@@ -30,7 +30,9 @@ db.room_rules = require('../model/room/roomRules.model')(sequelize, Sequelize)
 db.roomsType = require('../model/room/roomType.model')(sequelize, Sequelize)
 db.houseRules = require('../model/room/rules.model')(sequelize, Sequelize)
 db.rooms = require('../model/room/room.model')(sequelize, Sequelize)
-db.media = require('../model/media.model')(sequelize, Sequelize)
+
+//save post
+db.saves = require('../model/savepost/savePost.model')(sequelize, Sequelize)
 
 
 //...............event models
@@ -60,6 +62,7 @@ db.selectedLifestyle = require('../model/roommate/selected_lifestyle.model')(seq
 // db.rooms.hasMany(db.room_amenities, { foreignKey: 'amenitieId' });
 // db.room_amenities.belongsTo(db.rooms, { foreignKey: 'amenitieId' });
 
+//room
 db.media.belongsTo(db.rooms, { foreignKey: "roomId" });
 db.rooms.hasMany(db.media, { foreignKey: "roomId" });
 
