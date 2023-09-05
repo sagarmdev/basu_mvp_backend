@@ -33,21 +33,22 @@ db.rooms = require('../model/room/room.model')(sequelize, Sequelize)
 
 //save post
 db.saves = require('../model/savepost/savePost.model')(sequelize, Sequelize)
+db.media = require('../model/media.model')(sequelize, Sequelize)
+db.room_booking = require('../model/room/room_booking.model')(sequelize, Sequelize);
 
-
-//...............event models
-db.event_categories = require('../model/event/event_categories.model')(sequelize, Sequelize)
+//...............event 
+db.event_categories = require('../model/event/event_categories.model')(sequelize, Sequelize);
 db.event_amenities = require('../model/event/event_amenities.model')(sequelize, Sequelize);
 db.event = require('../model/event/event.model')(sequelize, Sequelize);
 db.event_photos = require('../model/event/event_photo.model')(sequelize, Sequelize);
-db.selected_amenities = require('../model/event/selected_event_amenities.model')(sequelize, Sequelize)
+db.selected_amenities = require('../model/event/selected_event_amenities.model')(sequelize, Sequelize);
 
-//.................items model..........
+//.................items 
 db.items_categories = require('../model/item/item_categories.model')(sequelize, Sequelize);
-db.items = require('../model/item/item.model')(sequelize, Sequelize)
+db.items = require('../model/item/item.model')(sequelize, Sequelize);
 db.item_photos = require('../model/item/item_photo.model')(sequelize, Sequelize);
 
-//...............roommate model....
+//...............roommate 
 db.roommate_interests = require('../model/roommate/roommate_interests.model')(sequelize, Sequelize);
 db.roommate_socials = require('../model/roommate/roommate_social.model')(sequelize, Sequelize);
 db.roommate = require('../model/roommate/roommate.model')(sequelize, Sequelize);
@@ -56,6 +57,9 @@ db.selectedInterest = require('../model/roommate/selected_interest.model')(seque
 db.selectedSocials = require('../model/roommate/selected_social.model')(sequelize, Sequelize);
 db.lifestyle = require('../model/roommate/lifestyle.model')(sequelize, Sequelize);
 db.selectedLifestyle = require('../model/roommate/selected_lifestyle.model')(sequelize, Sequelize);
+db.roommate_booking = require('../model/roommate/roommate_booking.model')(sequelize, Sequelize);
+
+
 
 //..........................relation...............
 
@@ -72,6 +76,11 @@ db.rooms.hasMany(db.room_amenities, { foreignKey: "roomId", as: 'roomAmenities' 
 db.room_rules.belongsTo(db.rooms, { foreignKey: 'roomId', as: 'roomRules' });
 db.rooms.hasMany(db.room_rules, { foreignKey: 'roomId', as: 'roomRules' });
 
+db.rooms.hasMany(db.room_booking, { foreignKey: 'room_id' });
+db.room_booking.belongsTo(db.rooms, { foreignKey: 'room_id' });
+
+db.users.hasMany(db.room_booking, { foreignKey: 'user_id' });
+db.room_booking.belongsTo(db.users, { foreignKey: 'user_id' });
 
 //event 
 db.event.hasMany(db.event_photos, { foreignKey: 'event_id' });
@@ -89,7 +98,7 @@ db.selected_amenities.belongsTo(db.event_amenities, { foreignKey: 'event_ameniti
 
 //item
 db.items_categories.hasMany(db.items, { foreignKey: 'item_category_id' });
-db.items.belongsTo(db.items_categories, { foreignKey: 'item_category_id' })
+db.items.belongsTo(db.items_categories, { foreignKey: 'item_category_id' });
 
 db.items.hasMany(db.item_photos, { foreignKey: 'items_id' });
 db.item_photos.belongsTo(db.items, { foreignKey: 'items_id' });
@@ -97,8 +106,7 @@ db.item_photos.belongsTo(db.items, { foreignKey: 'items_id' });
 
 // //roommate
 db.roommate.hasMany(db.roommate_media, { foreignKey: 'roommate_id' });
-db.roommate_media.belongsTo(db.roommate, { foreignKey: 'roommate_id' })
-
+db.roommate_media.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
 
 db.roommate.hasMany(db.selectedInterest, { foreignKey: 'roommate_id' });
 db.selectedInterest.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
@@ -107,7 +115,7 @@ db.roommate.hasMany(db.selectedSocials, { foreignKey: 'roommate_id' });
 db.selectedSocials.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
 
 db.roommate.hasMany(db.selectedLifestyle, { foreignKey: 'roommate_id' });
-db.selectedLifestyle.belongsTo(db.roommate, { foreignKey: 'roommate_id' })
+db.selectedLifestyle.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
 
 db.roommate_interests.hasMany(db.selectedInterest, { foreignKey: 'interest_id' });
 db.selectedInterest.belongsTo(db.roommate_interests, { foreignKey: 'interest_id' });
@@ -115,10 +123,14 @@ db.selectedInterest.belongsTo(db.roommate_interests, { foreignKey: 'interest_id'
 db.roommate_socials.hasMany(db.selectedSocials, { foreignKey: 'social_id' });
 db.selectedSocials.belongsTo(db.roommate_socials, { foreignKey: 'social_id' });
 
-
 db.lifestyle.hasMany(db.selectedLifestyle, { foreignKey: 'lifestyle_id' });
-db.selectedLifestyle.belongsTo(db.lifestyle, { foreignKey: 'lifestyle_id' })
+db.selectedLifestyle.belongsTo(db.lifestyle, { foreignKey: 'lifestyle_id' });
 
+db.roommate.hasMany(db.roommate_booking, { foreignKey: 'roommate_id' });
+db.roommate_booking.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
+
+db.users.hasMany(db.roommate_booking, { foreignKey: 'user_id' });
+db.roommate_booking.belongsTo(db.users, { foreignKey: 'user_id' });
 
 
 db.sequelize.sync({ force: false });

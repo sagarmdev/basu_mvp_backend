@@ -13,6 +13,7 @@ router.get('/get-all-room-mate', Auth.authUser, RoommateController.getAllRoommat
 
 router.get('/get-room-mate-by-id', Auth.authUser, RoommateController.getRoommateById);
 
+router.post('/book-roommate',Auth.authUser,RoommateController.bookingRoommate)
 
 
 module.exports = router;

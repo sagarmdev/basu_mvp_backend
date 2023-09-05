@@ -1,18 +1,21 @@
 const Validator = require("validatorjs");
 const db = require('../config/db.config');
 const { Op } = require('sequelize')
-const { Sequelize } = require('sequelize')
+const randomstring = require('randomstring')
+
 
 //...................models............
 const Roommate = db.roommate;
 const Roommate_media = db.roommate_media;
 const Roommate_social = db.roommate_socials;
 const Roommate_interests = db.roommate_interests;
+
 const Lifestyle = db.lifestyle
 const SelectedSocial = db.selectedSocials
 const SelectedInterest = db.selectedInterest
 const SelectedLifestyle = db.selectedLifestyle;
 
+const Roommate_booking = db.roommate_booking;
 const { uploadRoommateFiles, UploadFiles } = require('../helpers/file')
 
 
@@ -222,10 +225,13 @@ const getAllRoommate = async (req, res) => {
         }
 
 
-
         const findData = await Roommate.findAll({
             where: condition,
             include: [
+                {
+                    model: Roommate_media,
+                    attributes: ['media', 'id']
+                },
                 {
                     model: SelectedLifestyle,
                     attributes: ['lifestyle_id', 'id'],
@@ -253,8 +259,6 @@ const getAllRoommate = async (req, res) => {
         return RESPONSE.error(res, error.message);
     }
 }
-
-
 
 
 
@@ -299,6 +303,17 @@ const getRoommateById = async (req, res) => {
                         }
                     ],
                 },
+                {
+                    model: SelectedLifestyle,
+                    attributes: ['lifestyle_id', 'id'],
+                    as: 'selectedLifestyles',
+                    include: [
+                        {
+                            model: Lifestyle,
+                            attributes: ['name', 'id']
+                        }
+                    ],
+                },
             ],
         });
 
@@ -314,8 +329,57 @@ const getRoommateById = async (req, res) => {
 }
 
 
+//.....................booking roommates............
+const bookingRoommate = async (req, res) => {
+    let validation = new Validator(req.body, {
+        roommate_id: 'required',
+        date: 'required|date',
+        minimum_stay: 'required|numeric|min:1',
+        age: 'required|numeric'
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+
+    let trans = await db.sequelize.transaction();
+
+    try {
+        const { roommate_id, date, minimum_stay, age } = req.body;
+
+        const authUser = req.user;
+
+        const findRoommateData = await Roommate.findOne({ where: { id: roommate_id } });
+
+        if (!findRoommateData) {
+            await trans.rollback();
+            return RESPONSE.error(res, 2204);
+        }
+
+        if (findRoommateData.minimum_stay < minimum_stay) {
+            await trans.rollback();
+            return RESPONSE.error(res, 2302);
+        }
+
+        const bookingData = await Roommate_booking.create({ date, minimum_stay, age, user_id: authUser.id, roommate_id: findRoommateData.id }, { transaction: trans })
+
+        await trans.commit();
+        return RESPONSE.success(res, 2301, bookingData);
+    } catch (error) {
+
+        await trans.rollback();
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+
+
+
+
 module.exports = {
     addRoommate,
     getAllRoommate,
-    getRoommateById
+    getRoommateById,
+    bookingRoommate
 }

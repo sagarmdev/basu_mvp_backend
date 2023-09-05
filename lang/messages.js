@@ -16,6 +16,7 @@ const MESSAGES = {
     '1103': "data null",
     '1104': "get all rooms",
     '1105': "Data not found!",
+    '1106': "Room Booking successfully..",
 
     //event 
     '2001': 'Get event categories successfully.',
@@ -36,6 +37,10 @@ const MESSAGES = {
     '2202': 'You can upload only one image',
     '2203': 'Get roommate successfully',
     '2204': 'roommate data not found',
+
+    // roommate booking
+    '2301': 'Roommate Booking successfully',
+    '2302': 'Enter a valid minimum stay',
 
 }
 
