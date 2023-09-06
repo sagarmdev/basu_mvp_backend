@@ -356,7 +356,7 @@ const bookingRoommate = async (req, res) => {
             return RESPONSE.error(res, 2204);
         }
 
-        if (findRoommateData.minimum_stay < minimum_stay) {
+        if (Number(minimum_stay) > Number(findRoommateData.minimum_stay)) {
             await trans.rollback();
             return RESPONSE.error(res, 2302);
         }

@@ -8,6 +8,7 @@ const Event_categories = db.event_categories;
 const Event_amenities = db.event_amenities;
 const Event = db.event;
 const Event_photos = db.event_photos;
+const Event_booking = db.event_booking;
 const Selected_amenities = db.selected_amenities;
 
 
@@ -55,6 +56,7 @@ const createEvent = async (req, res) => {
     let validation = new Validator(req.body, {
         event_title: 'required|string',
         event_details: 'required|string',
+        seats: 'required|numeric',
         date: 'required',
         time: 'required',
         price: 'required',
@@ -71,9 +73,9 @@ const createEvent = async (req, res) => {
     try {
         const authUser = req.user;
 
-        const { event_title, event_details, date, time, price, city, lat, long, category_id, event_amenities_id } = req.body;
+        const { event_title, event_details, seats, date, time, price, city, lat, long, category_id, event_amenities_id } = req.body;
 
-        const event = await Event.create({ event_title, event_details, date, time, price, city, lat, long, category_id });
+        const event = await Event.create({ event_title, event_details, seats, date, time, price, city, lat, long, category_id });
 
         if (event) {
 
@@ -131,9 +133,49 @@ const createEvent = async (req, res) => {
 }
 
 
+//....................event booking ...........................
+const eventBooking = async (req, res) => {
+    let validation = new Validator(req.body, {
+        event_id: 'required',
+        participants: 'required|numeric|min:1',
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+    let trans = await db.sequelize.transaction();
+    try {
+        const { event_id, participants } = req.body;
+        const authUser = req.user;
+
+        const findEvent = await Event.findOne({ where: { id: event_id } });
+
+        if (!findEvent) {
+            await trans.rollback();
+            return RESPONSE.error(res, 1105);
+        }
+
+        if (Number(participants) > Number(findEvent.seats)) {
+            await trans.rollback();
+            return RESPONSE.error(res, 2007);
+        }
+
+        const eventBooking = await Event_booking.create({ user_id: authUser.id, event_id: findEvent.id, participants }, { transaction: trans });
+
+        await trans.commit();
+        return RESPONSE.success(res, 2006, eventBooking);
+    } catch (error) {
+        await trans.rollback();
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+
 
 module.exports = {
     getAllEventCategories,
     getAllEventAmenities,
-    createEvent
+    createEvent,
+    eventBooking
 }

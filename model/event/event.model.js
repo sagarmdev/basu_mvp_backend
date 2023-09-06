@@ -14,6 +14,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
+        seats: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
         date: {
             type: Sequelize.DATEONLY,
             allowNull: false

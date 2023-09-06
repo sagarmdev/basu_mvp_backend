@@ -8,25 +8,8 @@ const { UploadFiles } = require('../helpers/file')
 const Item_categories = db.items_categories;
 const Items = db.items;
 const Items_photos = db.item_photos;
+const Rent_item_booking = db.rent_item_booking
 
-
-//.......................get All Items_categories.......
-const getAllItemsCategories = async (req, res) => {
-    try {
-        const authUser = req.user;
-
-        const itemCategories = await Item_categories.findAll();
-
-        if (!itemCategories) {
-            return RESPONSE.error(res, 2103);
-        }
-
-        return RESPONSE.success(res, 2102, itemCategories);
-    } catch (error) {
-        console.log(error)
-        return RESPONSE.error(res, error.message);
-    }
-}
 
 
 //..............add item for sale & rent.................
@@ -37,7 +20,7 @@ const addItem = async (req, res) => {
         description: 'required|string',
         price: 'required|numeric',
         city: 'required|string',
-        price_duration: 'required_if:item_type,Rent|in:per day,per month',
+        price_duration: 'required_if:item_type,Rent|in:per day',
         security_deposite: 'required_if:item_type,Rent',
         lat: 'required',
         long: 'required',
@@ -84,6 +67,26 @@ const addItem = async (req, res) => {
         });
 
         return RESPONSE.success(res, 2101, findItem);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+
+
+//.......................get All Items_categories.......
+const getAllItemsCategories = async (req, res) => {
+    try {
+        const authUser = req.user;
+
+        const itemCategories = await Item_categories.findAll();
+
+        if (!itemCategories) {
+            return RESPONSE.error(res, 2103);
+        }
+
+        return RESPONSE.success(res, 2102, itemCategories);
     } catch (error) {
         console.log(error)
         return RESPONSE.error(res, error.message);
@@ -190,10 +193,47 @@ const getRentAndSaleById = async (req, res) => {
 }
 
 
+//......................rent booking............................
+
+const bookingRentItem = async (req, res) => {
+    let validation = new Validator(req.body, {
+        item_id: 'required',
+        rent_time: 'required|numeric|min:1'
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+    try {
+        const { item_id, rent_time } = req.body;
+
+        const authUser = req.user;
+
+        const findItem = await Items.findOne({ where: { id: item_id, item_type: 'Rent' } });
+
+        if (!findItem) {
+            return RESPONSE.error(res, 1105)
+        }
+
+        var total = findItem.price + findItem.security_deposite;
+        total = total * rent_time;
+
+        const bookingItem = await Rent_item_booking.create({ item_id, user_id: authUser.id, rent_time, total_price: total });
+
+        return RESPONSE.success(res, 2106, bookingItem);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
 
 module.exports = {
     getAllItemsCategories,
     addItem,
     getAllRentAndSale,
-    getRentAndSaleById
+    getRentAndSaleById,
+    bookingRentItem
 }
+
+

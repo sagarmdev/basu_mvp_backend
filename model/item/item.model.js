@@ -31,7 +31,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: true,
             default: null,
-            enum: ['per day', 'per month', null],
+            enum: ['per day', null],
         },
         security_deposite: {
             type: Sequelize.INTEGER,

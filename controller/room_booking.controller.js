@@ -6,6 +6,7 @@ const db = require("../config/db.config");
 const Room = db.rooms;
 const Room_booking = db.room_booking
 
+//..................... booking roommate ...................
 
 const bookingRoom = async (req, res) => {
     let validation = new Validator(req.body, {
@@ -31,12 +32,12 @@ const bookingRoom = async (req, res) => {
             return RESPONSE.error(res, 1105);
         }
 
-        if (findData.minimum_stay < minimum_stay) {
+        if (Number(minimum_stay) > Number(findData.minimumStay)) {
             await trans.rollback();
             return RESPONSE.error(res, 2302);
         }
 
-        // const bookingRoom = await Room_booking.create({ date, minimum_stay, user_id: authUser.id, room_id: findData.id }, { transaction: trans })
+        const bookingRoom = await Room_booking.create({ date, minimum_stay, user_id: authUser.id, room_id: findData.id }, { transaction: trans })
 
         await trans.commit();
         return RESPONSE.success(res, 1106, bookingRoom);

@@ -13,6 +13,7 @@ router.get('/get-event-amenities', Auth.authUser, eventController.getAllEventAme
 
 router.post('/create-event', Auth.authUser, eventController.createEvent) 
 
+router.post('/booking-event',Auth.authUser,eventController.eventBooking)
 
 
 module.exports = router;
