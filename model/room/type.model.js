@@ -1,27 +1,20 @@
-const db = require('../../config/db.config');
 module.exports = (sequelize, Sequelize) => {
-    const Roomtype = sequelize.define('room_type', {
+
+    const roomType = sequelize.define('roomTypes', {
         id: {
             type: Sequelize.BIGINT.UNSIGNED,
             autoIncrement: true,
             allowNull: false,
             primaryKey: true,
         },
-        roomId: {
-            type: Sequelize.BIGINT.UNSIGNED,
-            allowNull: false,
-            references: {
-                model: 'rooms',
-                key: 'id'
-            }
+        name: {
+            type: Sequelize.STRING(200),
+            allowNull: true,
         },
-        typeId: {
-            type: Sequelize.BIGINT.UNSIGNED,
+        active: {
+            type: Sequelize.INTEGER(2),
             allowNull: false,
-            references: {
-                model: 'roomTypes',
-                key: 'id'
-            }
+            defaultValue: 1,
         },
         createdAt: {
             field: 'created_at',
@@ -33,8 +26,15 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DATE,
             allowNull: false,
         },
+        deletedAt: {
+            field: 'deleted_at',
+            type: Sequelize.DATE,
+            allowNull: true,
+        },
     }, {
-        tableName: 'room_type',
+        tableName: 'roomTypes',
+        paranoid: "true"
     });
-    return Roomtype
+
+    return roomType
 }

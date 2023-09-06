@@ -6,11 +6,11 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             primaryKey: true,
         },
-        userId: {
+        user_id: {
             type: Sequelize.BIGINT.UNSIGNED,
             allowNull: false,
             references: {
-                model: 'users', // Replace with your user model name
+                model: 'users',
                 key: 'id'
             }
         },
@@ -18,7 +18,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.BIGINT.UNSIGNED,
             allowNull: true,
             references: {
-                model: 'rooms', // Replace with your room model name
+                model: 'rooms',
                 key: 'id'
             }
         },
@@ -26,7 +26,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.BIGINT.UNSIGNED,
             allowNull: true,
             references: {
-                model: 'events', // Replace with your event model name
+                model: 'events',
                 key: 'id'
             }
         },
@@ -34,7 +34,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.BIGINT.UNSIGNED,
             allowNull: true,
             references: {
-                model: 'roommates', // Replace with your roommate model name
+                model: 'roommates',
                 key: 'id'
             }
         },

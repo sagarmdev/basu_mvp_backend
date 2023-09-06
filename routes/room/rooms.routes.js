@@ -10,8 +10,8 @@ const checkAuth = require('../../middleware/checkAuth')
 router.post("/add-rooms", checkAuth.authUser, roomController.addRooms);
 router.get("/get-all-rooms", roomController.getAllRooms);
 router.get("/get-all-rooms-by-id", checkAuth.authUser, roomController.getAllRoomsById);
-
-router.post('/booking-room',checkAuth.authUser,roomBookingController.bookingRoom)
+router.get("/get-room", checkAuth.authUser, roomController.getRoom);
+router.post('/booking-room', checkAuth.authUser, roomBookingController.bookingRoom)
 //rooms type
 router.get("/get-roomType", roomTypeController.getAllType);
 

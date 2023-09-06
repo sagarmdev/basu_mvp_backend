@@ -1,5 +1,5 @@
 const db = require("../config/db.config");
-const roomType = db.roomsType;
+const roomType = db.type;
 
 const getAllType = async (req, res) => {
     try {

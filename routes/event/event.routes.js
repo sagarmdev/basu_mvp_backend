@@ -7,11 +7,13 @@ const Auth = require('../../middleware/checkAuth');
 const eventController = require('../../controller/event.controller');
 
 
-router.get('/get-event-categories', Auth.authUser,eventController.getAllEventCategories);
+router.get('/get-event-categories', Auth.authUser, eventController.getAllEventCategories);
 
 router.get('/get-event-amenities', Auth.authUser, eventController.getAllEventAmenities);
 
-router.post('/create-event', Auth.authUser, eventController.createEvent) 
+router.post('/create-event', Auth.authUser, eventController.createEvent)
+
+router.get('/get-event', Auth.authUser, eventController.getEvent)
 
 router.post('/booking-event',Auth.authUser,eventController.eventBooking)
 

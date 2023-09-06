@@ -18,6 +18,11 @@ const MESSAGES = {
     '1105': "Data not found!",
     '1106': "Room Booking successfully..",
 
+    //saved post
+    '1201': "post is saved",
+    '1202': "get all posts",
+
+
     //event 
     '2001': 'Get event categories successfully.',
     '2002': 'event categories not found.',

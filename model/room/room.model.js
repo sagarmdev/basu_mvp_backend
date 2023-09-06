@@ -23,13 +23,6 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING(200),
             allowNull: true,
         },
-        roomType: {
-            type: Sequelize.BIGINT.UNSIGNED,
-            references: {
-                model: 'roomTypes',
-                key: 'id'
-            }
-        },
         bedRooms: {
             type: Sequelize.INTEGER(50),
             // defaultValue: 1,
