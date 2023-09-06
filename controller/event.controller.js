@@ -133,6 +133,7 @@ const createEvent = async (req, res) => {
 }
 
 
+<<<<<<< Updated upstream
 //....................event booking ...........................
 const eventBooking = async (req, res) => {
     let validation = new Validator(req.body, {
@@ -170,6 +171,42 @@ const eventBooking = async (req, res) => {
         return RESPONSE.error(res, error.message);
     }
 }
+=======
+const getEvent = async (req, res) => {
+    try {
+        const { user: { id } } = req;
+        const event = await Event.findAll({
+            where: { id: id },
+            include: [
+                {
+                    model: Event_photos,
+                    attributes: ['photo', 'id']
+                },
+                {
+                    model: Event_categories,
+                    attributes: ['name', 'id']
+                },
+                {
+                    model: Selected_amenities,
+                    attributes: ['event_amenities_id', 'id'],
+                    include: [
+                        {
+                            model: Event_amenities,
+                            attributes: ['name', 'id']
+                        }
+                    ]
+                }
+            ],
+        })
+        // console.log(req.user.id);
+        // console.log(post);
+        return RESPONSE.success(res, 2007, event);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+};
+>>>>>>> Stashed changes
 
 
 
@@ -177,5 +214,9 @@ module.exports = {
     getAllEventCategories,
     getAllEventAmenities,
     createEvent,
+<<<<<<< Updated upstream
     eventBooking
+=======
+    getEvent
+>>>>>>> Stashed changes
 }

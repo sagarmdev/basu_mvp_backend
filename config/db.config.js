@@ -21,12 +21,17 @@ db.sequelize = sequelize;
 
 // api logs 
 db.api_logs = require('../model/api_logs.model')(sequelize, Sequelize)
+
+//user
 db.users = require('../model/user.model')(sequelize, Sequelize)
 db.user_sessions = require('../model/userSession.model')(sequelize, Sequelize)
+
+//room
 db.houseAmenities = require('../model/room/amenities.model')(sequelize, Sequelize)
 db.room_amenities = require('../model/room/roomAmenities.model')(sequelize, Sequelize)
 db.media = require('../model/media.model')(sequelize, Sequelize)
 db.room_rules = require('../model/room/roomRules.model')(sequelize, Sequelize)
+db.type = require('../model/room/type.model')(sequelize, Sequelize)
 db.roomsType = require('../model/room/roomType.model')(sequelize, Sequelize)
 db.houseRules = require('../model/room/rules.model')(sequelize, Sequelize)
 db.rooms = require('../model/room/room.model')(sequelize, Sequelize)
@@ -78,11 +83,34 @@ db.rooms.hasMany(db.room_amenities, { foreignKey: "roomId", as: 'roomAmenities' 
 db.room_rules.belongsTo(db.rooms, { foreignKey: 'roomId', as: 'roomRules' });
 db.rooms.hasMany(db.room_rules, { foreignKey: 'roomId', as: 'roomRules' });
 
+db.roomsType.belongsTo(db.rooms, { foreignKey: 'roomId', as: 'roomType' });
+db.rooms.hasMany(db.roomsType, { foreignKey: 'roomId', as: 'roomType' });
+
 db.rooms.hasMany(db.room_booking, { foreignKey: 'room_id' });
 db.room_booking.belongsTo(db.rooms, { foreignKey: 'room_id' });
 
 db.users.hasMany(db.room_booking, { foreignKey: 'user_id' });
 db.room_booking.belongsTo(db.users, { foreignKey: 'user_id' });
+
+db.houseRules.hasMany(db.room_rules, { foreignKey: 'rulesId', as: 'houserules' });
+db.room_rules.belongsTo(db.houseRules, { foreignKey: 'rulesId', as: 'houserules' });
+
+db.houseAmenities.hasMany(db.room_amenities, { foreignKey: 'amenitieId', as: 'houseamenitie' });
+db.room_amenities.belongsTo(db.houseAmenities, { foreignKey: 'amenitieId', as: 'houseamenitie' });
+
+db.type.hasMany(db.roomsType, { foreignKey: 'typeId', as: 'roomtype' });
+db.roomsType.belongsTo(db.type, { foreignKey: 'typeId', as: 'roomtype' });
+
+
+//save post
+db.rooms.hasMany(db.saves, { foreignKey: "roomId", as: 'room' });
+db.saves.belongsTo(db.rooms, { foreignKey: "roomId", as: 'room' });
+
+db.event.hasMany(db.saves, { foreignKey: "eventId", as: 'event' });
+db.saves.belongsTo(db.event, { foreignKey: "eventId", as: 'event' });
+
+db.roommate.hasMany(db.saves, { foreignKey: "roommateId", as: 'roommate' });
+db.saves.belongsTo(db.roommate, { foreignKey: "roommateId", as: 'roommate' });
 
 //event 
 db.event.hasMany(db.event_photos, { foreignKey: 'event_id' });
@@ -104,6 +132,8 @@ db.users.hasMany(db.event_booking, { foreignKey: 'user_id' });
 db.event_booking.belongsTo(db.users, { foreignKey: 'user_id' });
 
 
+
+
 //item
 db.items_categories.hasMany(db.items, { foreignKey: 'item_category_id' });
 db.items.belongsTo(db.items_categories, { foreignKey: 'item_category_id' });
@@ -114,10 +144,16 @@ db.item_photos.belongsTo(db.items, { foreignKey: 'items_id' });
 db.users.hasMany(db.rent_item_booking, { foreignKey: 'user_id' });
 db.rent_item_booking.belongsTo(db.users, { foreignKey: 'user_id' });
 
+<<<<<<< Updated upstream
 db.items.hasMany(db.rent_item_booking, { foreignKey: 'item_id' });
 db.rent_item_booking.belongsTo(db.items, { foreignKey: 'item_id' });
 
 //roommate
+=======
+
+
+// //roommate
+>>>>>>> Stashed changes
 db.roommate.hasMany(db.roommate_media, { foreignKey: 'roommate_id' });
 db.roommate_media.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
 
