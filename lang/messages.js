@@ -24,6 +24,8 @@ const MESSAGES = {
     '2003': 'Get event amenities successfully.',
     '2004': 'event amenities not found.',
     '2005': 'Create event successfully..',
+    '2006': 'event Booking successfully..',
+    '2007': 'Ticket not available',
 
     //item sale & rent 
     '2101': 'Create item successfully..',
@@ -31,6 +33,7 @@ const MESSAGES = {
     '2103': 'item categories not found',
     '2104': 'Get Rent & Sale successfully..',
     '2105': 'Sale Or Rent not found',
+    '2106': 'Rent item booking successfully..',
 
     //roommate
     '2201': 'Add roommate  successfully..',
