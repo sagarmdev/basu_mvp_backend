@@ -33,9 +33,9 @@ const addItem = async (req, res) => {
     try {
         const { item_type, title, description, price, city, price_duration, security_deposite, lat, long, item_category_id } = req.body;
 
-        const authUser = req.user;
+        const authUser = req.user.id;
 
-        const itemData = await Items.create({ item_type, title, description, price, city, price_duration, security_deposite, lat, long, item_category_id });
+        const itemData = await Items.create({ user_id: authUser, item_type, title, description, price, city, price_duration, security_deposite, lat, long, item_category_id });
 
         //..................upload photo....
         if (itemData) {
@@ -192,6 +192,45 @@ const getRentAndSaleById = async (req, res) => {
     }
 }
 
+//...........................get your Rent and Sale...............
+
+const getRentAndSale = async (req, res) => {
+    let validation = new Validator(req.query, {
+        item_type: 'required|in:Rent,Sale'
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+
+    try {
+        const { user: { id } } = req;
+        const { item_type } = req.query;
+
+        const findData = await Items.findAll(
+            {
+                where: { item_type: item_type, user_id: id },
+                include: [
+                    {
+                        model: Items_photos,
+                        attributes: ['photo', 'id']
+                    },
+                    {
+                        model: Item_categories,
+                        attributes: ['name', 'id']
+                    },
+                ],
+            })
+        if (!findData.length) {
+            return RESPONSE.error(res, 2105);
+        }
+        return RESPONSE.success(res, 2104, findData);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
 
 //......................rent booking............................
 
@@ -233,7 +272,8 @@ module.exports = {
     addItem,
     getAllRentAndSale,
     getRentAndSaleById,
-    bookingRentItem
+    bookingRentItem,
+    getRentAndSale
 }
 
 

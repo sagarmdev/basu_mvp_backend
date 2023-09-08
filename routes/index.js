@@ -23,7 +23,11 @@ router.use('/roommate', roommateRoutes);
 
 //save post
 const savePostRoutes = require('./savepost/savePost.routes');
-router.use('/savepost', savePostRoutes);
+router.use('/post', savePostRoutes);
+
+//card
+const cardRoutes = require('./card/card.routes');
+router.use('/card', cardRoutes);
 
 
 module.exports = router;

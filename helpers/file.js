@@ -4,7 +4,7 @@ const config = require("../config/config");
 let suid = require("rand-token").suid;
 let uid = require("rand-token").uid;
 
-function imageUpload(fileObjArray, pathFolder = "image") {
+function imageUpload(fileObjArray, pathFolder = "room_image") {
     let imagearr = [];
     for (let index = 0, len = fileObjArray.length; index < len; ++index) {
         if (fileObjArray[index].fieldname === "mediaImg") {

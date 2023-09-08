@@ -55,7 +55,7 @@ const addRoommate = async (req, res) => {
     try {
         const { city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, interest_id, social_id, lifestyle_id, message } = req.body;
 
-        const authUser = req.user
+        const authUser = req.user.id
 
         let photo = [];
         if (typeof req.files !== 'undefined' && req.files.length > 0) {
@@ -67,7 +67,7 @@ const addRoommate = async (req, res) => {
             photo = await UploadFiles(data, 'images/roommate_media', 'image');
         }
 
-        const addRoommate = await Roommate.create({ image: photo[0], city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, message })
+        const addRoommate = await Roommate.create({ user_id: authUser, image: photo[0], city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, message })
         if (addRoommate) {
 
             for (const selectedInterest of interest_id) {
@@ -191,7 +191,7 @@ const getAllRoommate = async (req, res) => {
         }
 
         if (bedrooms) {
-            condition.bedrooms = bedrooms
+            condition.bedrooms = bedrooms;
         }
         if (bathrooms) {
             condition.bathrooms = bathrooms;
@@ -328,6 +328,65 @@ const getRoommateById = async (req, res) => {
     }
 }
 
+//.....................get roommates............
+
+const getRoommate = async (req, res) => {
+    try {
+        const { user: { id } } = req;
+
+        const findData = await Roommate.findOne({
+            where: { user_id: id },
+            include: [
+                {
+                    model: Roommate_media,
+                    attributes: ['media', 'id']
+                },
+
+                {
+                    model: SelectedInterest,
+                    attributes: ['interest_id', 'id'],
+                    include: [
+                        {
+                            model: Roommate_interests,
+                            attributes: ['name', 'id']
+                        }
+                    ],
+                },
+
+                {
+                    model: SelectedSocial,
+                    attributes: ['social_id', 'id'],
+                    include: [
+                        {
+                            model: Roommate_social,
+                            attributes: ['name', 'id']
+                        }
+                    ],
+                },
+                {
+                    model: SelectedLifestyle,
+                    attributes: ['lifestyle_id', 'id'],
+                    as: 'selectedLifestyles',
+                    include: [
+                        {
+                            model: Lifestyle,
+                            attributes: ['name', 'id']
+                        }
+                    ],
+                },
+            ],
+        });
+
+        if (!findData) {
+            return RESPONSE.error(res, 2204);
+        }
+
+        return RESPONSE.success(res, 2203, findData);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
 
 //.....................booking roommates............
 const bookingRoommate = async (req, res) => {
@@ -381,5 +440,7 @@ module.exports = {
     addRoommate,
     getAllRoommate,
     getRoommateById,
-    bookingRoommate
+    bookingRoommate,
+    getRoommate
+
 }

@@ -38,6 +38,14 @@ module.exports = (sequelize, Sequelize) => {
                 key: 'id'
             }
         },
+        itemId: {
+            type: Sequelize.BIGINT.UNSIGNED,
+            allowNull: true,
+            references: {
+                model: 'items',
+                key: 'id'
+            }
+        },
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,

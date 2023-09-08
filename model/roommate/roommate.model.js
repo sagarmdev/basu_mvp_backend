@@ -6,6 +6,14 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             primaryKey: true,
         },
+        user_id: {
+            type: Sequelize.BIGINT.UNSIGNED,
+            allowNull: false,
+            references: {
+                model: 'users',
+                key: 'id'
+            }
+        },
         city: {
             type: Sequelize.STRING,
             allowNull: false
@@ -52,7 +60,7 @@ module.exports = (sequelize, Sequelize) => {
         bedrooms: {
             type: Sequelize.INTEGER,
             allowNull: false,
-            
+
         },
         bathrooms: {
             type: Sequelize.INTEGER,
@@ -94,7 +102,7 @@ module.exports = (sequelize, Sequelize) => {
                 return rawValue ? ASSETS.getMediaUrl(rawValue, "roommate_media") : null;
             }
         },
-        
+
         message: {
             type: Sequelize.STRING,
             allowNull: false,

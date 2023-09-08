@@ -66,6 +66,9 @@ db.lifestyle = require('../model/roommate/lifestyle.model')(sequelize, Sequelize
 db.selectedLifestyle = require('../model/roommate/selected_lifestyle.model')(sequelize, Sequelize);
 db.roommate_booking = require('../model/roommate/roommate_booking.model')(sequelize, Sequelize);
 
+//card
+db.card = require('../model/card/card.model')(sequelize, Sequelize);
+
 
 
 //..........................relation................................
@@ -112,6 +115,9 @@ db.saves.belongsTo(db.event, { foreignKey: "eventId", as: 'event' });
 db.roommate.hasMany(db.saves, { foreignKey: "roommateId", as: 'roommate' });
 db.saves.belongsTo(db.roommate, { foreignKey: "roommateId", as: 'roommate' });
 
+db.items.hasMany(db.saves, { foreignKey: "itemId", as: 'item' });
+db.saves.belongsTo(db.items, { foreignKey: "itemId", as: 'item' });
+
 //event 
 db.event.hasMany(db.event_photos, { foreignKey: 'event_id' });
 db.event_photos.belongsTo(db.event, { foreignKey: 'event_id' });
@@ -144,16 +150,10 @@ db.item_photos.belongsTo(db.items, { foreignKey: 'items_id' });
 db.users.hasMany(db.rent_item_booking, { foreignKey: 'user_id' });
 db.rent_item_booking.belongsTo(db.users, { foreignKey: 'user_id' });
 
-<<<<<<< Updated upstream
 db.items.hasMany(db.rent_item_booking, { foreignKey: 'item_id' });
 db.rent_item_booking.belongsTo(db.items, { foreignKey: 'item_id' });
 
 //roommate
-=======
-
-
-// //roommate
->>>>>>> Stashed changes
 db.roommate.hasMany(db.roommate_media, { foreignKey: 'roommate_id' });
 db.roommate_media.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
 

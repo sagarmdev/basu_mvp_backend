@@ -21,6 +21,7 @@ const MESSAGES = {
     //saved post
     '1201': "post is saved",
     '1202': "get all posts",
+    '1203': "post not found!",
 
 
     //event 
@@ -31,6 +32,7 @@ const MESSAGES = {
     '2005': 'Create event successfully..',
     '2006': 'event Booking successfully..',
     '2007': 'Ticket not available',
+    '2008': 'get all events',
 
     //item sale & rent 
     '2101': 'Create item successfully..',

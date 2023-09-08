@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const item = sequelize.define('items', {
+    const Card = sequelize.define('card', {
         id: {
             type: Sequelize.BIGINT.UNSIGNED,
             autoIncrement: true,
@@ -14,50 +14,19 @@ module.exports = (sequelize, Sequelize) => {
                 key: 'id'
             }
         },
-        item_type: {
-            type: Sequelize.STRING,
-            enum: ['Rent', 'Sale'],
-        },
-        title: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        description: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        price: {
+        card_number: {
             type: Sequelize.INTEGER,
-            allowNull: true,
-            default: null
-        },
-        city: {
-            type: Sequelize.STRING,
             allowNull: false
         },
-        price_duration: {
-            type: Sequelize.STRING,
-            allowNull: true,
-            default: null,
-            enum: ['per day', null],
+        expiry_date: {
+            type: Sequelize.DATEONLY,
+            allowNull: false
         },
-        security_deposite: {
+        cvc: {
             type: Sequelize.INTEGER,
-            allowNull: true,
-            default: null
-        },
-        item_category_id: {
-            type: Sequelize.BIGINT.UNSIGNED,
-            references: {
-                model: 'items_categories',
-                key: 'id'
-            }
-        },
-        lat: {
-            type: Sequelize.STRING,
             allowNull: false
         },
-        long: {
+        cardholder_name: {
             type: Sequelize.STRING,
             allowNull: false
         },
@@ -75,10 +44,10 @@ module.exports = (sequelize, Sequelize) => {
             field: 'deleted_at',
             type: Sequelize.DATE,
             allowNull: true,
-        },
+        }
     }, {
-        tableName: 'items',
+        tableName: 'card',
         paranoid: "true"
     });
-    return item
+    return Card
 }

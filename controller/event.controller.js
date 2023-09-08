@@ -71,11 +71,11 @@ const createEvent = async (req, res) => {
         return RESPONSE.error(res, validation.errors.first(firstMessage))
     }
     try {
-        const authUser = req.user;
+        const authUser = req.user.id;
 
         const { event_title, event_details, seats, date, time, price, city, lat, long, category_id, event_amenities_id } = req.body;
 
-        const event = await Event.create({ event_title, event_details, seats, date, time, price, city, lat, long, category_id });
+        const event = await Event.create({ user_id: authUser, event_title, event_details, seats, date, time, price, city, lat, long, category_id });
 
         if (event) {
 
@@ -133,7 +133,6 @@ const createEvent = async (req, res) => {
 }
 
 
-<<<<<<< Updated upstream
 //....................event booking ...........................
 const eventBooking = async (req, res) => {
     let validation = new Validator(req.body, {
@@ -171,12 +170,13 @@ const eventBooking = async (req, res) => {
         return RESPONSE.error(res, error.message);
     }
 }
-=======
+
+//get your all events
 const getEvent = async (req, res) => {
     try {
         const { user: { id } } = req;
         const event = await Event.findAll({
-            where: { id: id },
+            where: { user_id: id },
             include: [
                 {
                     model: Event_photos,
@@ -200,13 +200,12 @@ const getEvent = async (req, res) => {
         })
         // console.log(req.user.id);
         // console.log(post);
-        return RESPONSE.success(res, 2007, event);
+        return RESPONSE.success(res, 2008, event);
     } catch (error) {
         console.log(error)
         return RESPONSE.error(res, error.message);
     }
 };
->>>>>>> Stashed changes
 
 
 
@@ -214,9 +213,6 @@ module.exports = {
     getAllEventCategories,
     getAllEventAmenities,
     createEvent,
-<<<<<<< Updated upstream
-    eventBooking
-=======
+    eventBooking,
     getEvent
->>>>>>> Stashed changes
 }

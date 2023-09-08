@@ -84,7 +84,7 @@ const addRooms = async (req, res) => {
         let mediaImg;
         if (typeof req.files !== 'undefined' && req.files.length > 0) {
             if (req.files[0].fieldname == 'mediaUrl') {
-                mediaImg = await FILEACTION.imageUpload(req.files, 'image');
+                mediaImg = await FILEACTION.imageUpload(req.files, 'room_image');
             }
         }
 
@@ -126,7 +126,6 @@ const addRooms = async (req, res) => {
             })
             // console.log("amenitieData",amenitieData);
 
-            // create bulk for aminities
             const createAmenities = await roomAmenitie.bulkCreate(amenitieData, {
                 returning: true
             });
@@ -143,7 +142,6 @@ const addRooms = async (req, res) => {
                 }
             })
 
-            // create bulk for aminities
             const createRules = await roomRules.bulkCreate(rulesData, {
                 returning: true
             });
@@ -177,11 +175,11 @@ const addRooms = async (req, res) => {
                 let workspace_imageArr = [];
 
                 if (isWorkspaceImg) {
-                    workspace_imageArr = await FILEACTION.imageUpload(req.files, 'image');
+                    workspace_imageArr = await FILEACTION.imageUpload(req.files, 'room_image');
                     const mediaDataImg = workspace_imageArr.map((item) => ({
                         type: 1, // image
                         roomId: newRoom.id,
-                        url: `/image/${item}`
+                        url: `/room_image/${item}`
                     }));
                     mediaData.push(...mediaDataImg);
                 }
@@ -348,7 +346,7 @@ const getRoom = async (req, res) => {
     try {
         const { user: { id } } = req;
         const event = await Room.findAll({
-            where: { id: id },
+            where: { user_id: id },
             include: [
                 {
                     model: Media,
