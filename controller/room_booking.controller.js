@@ -1,5 +1,6 @@
 const Validator = require('validatorjs');
 const db = require("../config/db.config");
+const { Op } = require('sequelize')
 
 
 //...................models............
@@ -25,6 +26,20 @@ const bookingRoom = async (req, res) => {
         const { room_id, date, minimum_stay, } = req.body;
         const authUser = req.user;
 
+        const isExist = await Room_booking.findAll({
+            where: {
+                user_id: authUser.id,
+                room_id: room_id,
+                status: {
+                    [Op.or]: ['Pending', 'Accept']
+                }
+            }
+        });
+
+
+        if (isExist.length) {
+            return RESPONSE.error(res, 1107)
+        }
         const findData = await Room.findOne({ where: { id: room_id } });
 
         if (!findData) {
@@ -48,6 +63,7 @@ const bookingRoom = async (req, res) => {
         return RESPONSE.error(res, error.message);
     }
 }
+
 
 module.exports = {
     bookingRoom

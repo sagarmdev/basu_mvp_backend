@@ -1,6 +1,7 @@
 const Validator = require("validatorjs");
 const db = require('../config/db.config');
 const { UploadFiles } = require('../helpers/file')
+const { Op } = require('sequelize')
 
 
 //...................models............
@@ -148,6 +149,21 @@ const eventBooking = async (req, res) => {
         const { event_id, participants } = req.body;
         const authUser = req.user;
 
+        const isExist = await Event_booking.findAll({
+            where: {
+                user_id: authUser.id,
+                event_id: event_id,
+                status: {
+                    [Op.or]: ['Pending', 'Accept']
+                }
+            }
+        });
+
+
+        if (isExist.length) {
+            return RESPONSE.error(res, 2107)
+        }
+
         const findEvent = await Event.findOne({ where: { id: event_id } });
 
         if (!findEvent) {
@@ -172,6 +188,7 @@ const eventBooking = async (req, res) => {
 }
 
 //get your all events
+
 const getEvent = async (req, res) => {
     try {
         const { user: { id } } = req;
@@ -197,9 +214,7 @@ const getEvent = async (req, res) => {
                     ]
                 }
             ],
-        })
-        // console.log(req.user.id);
-        // console.log(post);
+        });
         return RESPONSE.success(res, 2008, event);
     } catch (error) {
         console.log(error)
@@ -214,5 +229,7 @@ module.exports = {
     getAllEventAmenities,
     createEvent,
     eventBooking,
+    eventBooking,
     getEvent
 }
+

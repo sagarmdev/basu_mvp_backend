@@ -248,6 +248,21 @@ const bookingRentItem = async (req, res) => {
 
         const authUser = req.user;
 
+        const isExist = await Rent_item_booking.findAll({
+            where: {
+                user_id: authUser.id,
+                item_id: item_id,
+                status: {
+                    [Op.or]: ['Pending', 'Accept']
+                }
+            }
+        });
+
+
+        if (isExist.length) {
+            return RESPONSE.error(res, 2107)
+        }
+
         const findItem = await Items.findOne({ where: { id: item_id, item_type: 'Rent' } });
 
         if (!findItem) {

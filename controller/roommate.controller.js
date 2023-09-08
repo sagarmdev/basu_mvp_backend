@@ -14,8 +14,8 @@ const Lifestyle = db.lifestyle
 const SelectedSocial = db.selectedSocials
 const SelectedInterest = db.selectedInterest
 const SelectedLifestyle = db.selectedLifestyle;
-
 const Roommate_booking = db.roommate_booking;
+
 const { uploadRoommateFiles, UploadFiles } = require('../helpers/file')
 
 
@@ -388,6 +388,7 @@ const getRoommate = async (req, res) => {
     }
 }
 
+
 //.....................booking roommates............
 const bookingRoommate = async (req, res) => {
     let validation = new Validator(req.body, {
@@ -407,6 +408,21 @@ const bookingRoommate = async (req, res) => {
         const { roommate_id, date, minimum_stay, age } = req.body;
 
         const authUser = req.user;
+
+        const isExist = await Roommate_booking.findAll({
+            where: {
+                user_id: authUser.id,
+                roommate_id: roommate_id,
+                status: {
+                    [Op.or]: ['Pending', 'Accept']
+                }
+            }
+        });
+
+
+        if (isExist.length) {
+            return RESPONSE.error(res, 2303)
+        }
 
         const findRoommateData = await Roommate.findOne({ where: { id: roommate_id } });
 
