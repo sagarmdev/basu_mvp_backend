@@ -108,7 +108,6 @@ const getSavePost = async (req, res) => {
                             model: Roommate_media,
                             attributes: ['media', 'id']
                         },
-
                         {
                             model: SelectedInterest,
                             attributes: ['interest_id', 'id'],

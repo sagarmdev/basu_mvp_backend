@@ -17,6 +17,10 @@ const MESSAGES = {
     '1104': "get all rooms",
     '1105': "Data not found!",
     '1106': "Room Booking successfully..",
+    '1107': "get all room amenities",
+    '1108': "get all room amenities",
+    '1109': "Room update successfully",
+    '1110': "Deleted successfully",
 
     //saved post
     '1201': "post is saved",
@@ -51,6 +55,10 @@ const MESSAGES = {
     // roommate booking
     '2301': 'Roommate Booking successfully',
     '2302': 'Enter a valid minimum stay',
+
+    //card
+    '2401': 'card added',
+    '2402': 'get all cards',
 
 }
 

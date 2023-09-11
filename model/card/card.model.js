@@ -18,8 +18,12 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
             allowNull: false
         },
-        expiry_date: {
-            type: Sequelize.DATEONLY,
+        expiry_month: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        expiry_year: {
+            type: Sequelize.INTEGER,
             allowNull: false
         },
         cvc: {
@@ -29,6 +33,11 @@ module.exports = (sequelize, Sequelize) => {
         cardholder_name: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        active: {
+            type: Sequelize.INTEGER(2),
+            allowNull: false,
+            defaultValue: 1,
         },
         createdAt: {
             field: 'created_at',
