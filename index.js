@@ -8,6 +8,8 @@ const config = require('./config/config')
 const multer = require('multer')
 const upload = multer();
 const path = require('path')
+const { Server } = require('socket.io')
+const socketController = require('./controller/chat.controller.js')
 
 
 app.use(upload.any())
@@ -36,6 +38,17 @@ if (config.protocol == 'https') {
     var http = require('http')
     server = http.createServer(app);
 };
+
+const io = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+})
+
+
+io.use(socketController.socketAuth);
+socketController.socketEvent(io);
+
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {

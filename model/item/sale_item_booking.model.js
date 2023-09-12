@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const roommateBooking = sequelize.define('roommate_bookings', {
+    const saleItemBooking = sequelize.define('sale_item_bookings', {
         id: {
             type: Sequelize.BIGINT.UNSIGNED,
             autoIncrement: true,
@@ -14,25 +14,13 @@ module.exports = (sequelize, Sequelize) => {
                 key: 'id'
             }
         },
-        roommate_id: {
+        item_id: {
             type: Sequelize.BIGINT.UNSIGNED,
             allowNull: false,
             references: {
-                model: 'roommates',
+                model: 'items',
                 key: 'id'
             }
-        },
-        date: {
-            type: Sequelize.DATE,
-            allowNull: false
-        },
-        minimum_stay: {
-            type: Sequelize.INTEGER,
-            allowNull: false
-        },
-        age: {
-            type: Sequelize.INTEGER,
-            allowNull: false
         },
         status: {
             type: Sequelize.ENUM(['Pending', 'Decline', 'Accept']),
@@ -54,8 +42,8 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true,
         },
     }, {
-        tableName: 'roommate_bookings',
+        tableName: 'sale_item_bookings',
         paranoid: "true"
     });
-    return roommateBooking
+    return saleItemBooking
 }

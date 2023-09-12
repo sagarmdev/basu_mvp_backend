@@ -61,9 +61,10 @@ const addRoommate = async (req, res) => {
         if (typeof req.files !== 'undefined' && req.files.length > 0) {
 
             const data = req.files.filter((item) => item.fieldname == "image")
-            if (data.length != 1) {
+            if (data.length > 1) {
                 return RESPONSE.error(res, 2202)
             }
+
             photo = await UploadFiles(data, 'images/roommate_media', 'image');
         }
 

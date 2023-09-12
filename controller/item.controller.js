@@ -8,8 +8,8 @@ const { UploadFiles } = require('../helpers/file')
 const Item_categories = db.items_categories;
 const Items = db.items;
 const Items_photos = db.item_photos;
-const Rent_item_booking = db.rent_item_booking
-
+const Rent_item_booking = db.rent_item_booking;
+const Sale_item_booking = db.sale_item_booking;
 
 
 //..............add item for sale & rent.................
@@ -232,7 +232,7 @@ const getRentAndSale = async (req, res) => {
 }
 
 
-//......................rent booking............................
+//......................rent item  booking............................
 
 const bookingRentItem = async (req, res) => {
     let validation = new Validator(req.body, {
@@ -282,13 +282,59 @@ const bookingRentItem = async (req, res) => {
 }
 
 
+//.......................... sale item booking ................
+const bookingSaleItem = async (req, res) => {
+    let validation = new Validator(req.query, {
+        item_id: 'required',
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+    try {
+        const { item_id } = req.query;
+
+        const authUser = req.user;
+
+        const isExist = await Sale_item_booking.findAll({
+            where: {
+                user_id: authUser.id,
+                item_id: item_id,
+                status: {
+                    [Op.or]: ['Pending', 'Accept']
+                }
+            }
+        });
+
+        if (isExist.length) {
+            return RESPONSE.error(res, 2107)
+        }
+
+        const findItem = await Items.findOne({ where: { id: item_id, item_type: 'Sale' } });
+
+        if (!findItem) {
+            return RESPONSE.error(res, 1105)
+        }
+
+        const bookingItem = await Sale_item_booking.create({ item_id, user_id: authUser.id });
+
+        return RESPONSE.success(res, 2108, bookingItem);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+
+
 module.exports = {
     getAllItemsCategories,
     addItem,
     getAllRentAndSale,
     getRentAndSaleById,
     bookingRentItem,
-    getRentAndSale
+    getRentAndSale,
+    bookingSaleItem
 }
 
 

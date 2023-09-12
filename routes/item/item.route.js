@@ -20,4 +20,6 @@ router.get('/get-rent-and-sale', Auth.authUser, ItemController.getRentAndSale);
 
 router.post('/booking-rent-item', Auth.authUser, ItemController.bookingRentItem);
 
+router.post('/booking-sale-item', Auth.authUser, ItemController.bookingSaleItem);
+
 module.exports = router;

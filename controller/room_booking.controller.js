@@ -36,9 +36,8 @@ const bookingRoom = async (req, res) => {
             }
         });
 
-
         if (isExist.length) {
-            return RESPONSE.error(res, 1107)
+            return RESPONSE.error(res, 1111)
         }
         const findData = await Room.findOne({ where: { id: room_id } });
 

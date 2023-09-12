@@ -28,7 +28,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         status: {
             type: Sequelize.ENUM(['Pending', 'Decline', 'Accept']),
-            defaultValue: 'pending'
+            defaultValue: 'Pending'
         },
         createdAt: {
             field: 'created_at',

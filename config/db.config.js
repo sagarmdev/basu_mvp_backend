@@ -10,7 +10,6 @@ const sequelize = new Sequelize(config.database.database, config.database.userna
         acquire: 30000,
         idle: 10000
     },
-    logging: false
 });
 
 const db = {};
@@ -55,6 +54,7 @@ db.items_categories = require('../model/item/item_categories.model')(sequelize, 
 db.items = require('../model/item/item.model')(sequelize, Sequelize);
 db.item_photos = require('../model/item/item_photo.model')(sequelize, Sequelize);
 db.rent_item_booking = require('../model/item/rent_item_booking.model')(sequelize, Sequelize);
+db.sale_item_booking = require('../model/item/sale_item_booking.model')(sequelize, Sequelize);
 
 //...............roommate 
 db.roommate_interests = require('../model/roommate/roommate_interests.model')(sequelize, Sequelize);
@@ -120,6 +120,9 @@ db.items.hasMany(db.saves, { foreignKey: "itemId", as: 'item' });
 db.saves.belongsTo(db.items, { foreignKey: "itemId", as: 'item' });
 
 //event 
+db.users.hasMany(db.event, { foreignKey: 'user_id' });
+db.event.belongsTo(db.users, { foreignKey: 'user_id' });
+
 db.event.hasMany(db.event_photos, { foreignKey: 'event_id' });
 db.event_photos.belongsTo(db.event, { foreignKey: 'event_id' });
 
@@ -139,8 +142,6 @@ db.users.hasMany(db.event_booking, { foreignKey: 'user_id' });
 db.event_booking.belongsTo(db.users, { foreignKey: 'user_id' });
 
 
-
-
 //item
 db.items_categories.hasMany(db.items, { foreignKey: 'item_category_id' });
 db.items.belongsTo(db.items_categories, { foreignKey: 'item_category_id' });
@@ -148,13 +149,25 @@ db.items.belongsTo(db.items_categories, { foreignKey: 'item_category_id' });
 db.items.hasMany(db.item_photos, { foreignKey: 'items_id' });
 db.item_photos.belongsTo(db.items, { foreignKey: 'items_id' });
 
+db.users.hasMany(db.items, { foreignKey: 'user_id' });
+db.items.belongsTo(db.users, { foreignKey: 'user_id' });
+
 db.users.hasMany(db.rent_item_booking, { foreignKey: 'user_id' });
 db.rent_item_booking.belongsTo(db.users, { foreignKey: 'user_id' });
 
 db.items.hasMany(db.rent_item_booking, { foreignKey: 'item_id' });
 db.rent_item_booking.belongsTo(db.items, { foreignKey: 'item_id' });
 
+db.users.hasMany(db.sale_item_booking, { foreignKey: 'user_id' });
+db.sale_item_booking.belongsTo(db.users, { foreignKey: 'user_id' });
+
+db.items.hasMany(db.sale_item_booking, { foreignKey: 'item_id' });
+db.sale_item_booking.belongsTo(db.items, { foreignKey: 'item_id' });
+
 //roommate
+db.users.hasMany(db.roommate, { foreignKey: 'user_id' });
+db.roommate.belongsTo(db.users, { foreignKey: 'user_id' });
+
 db.roommate.hasMany(db.roommate_media, { foreignKey: 'roommate_id' });
 db.roommate_media.belongsTo(db.roommate, { foreignKey: 'roommate_id' });
 

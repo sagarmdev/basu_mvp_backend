@@ -9,6 +9,10 @@ const MESSAGES = {
     '1007': "Invalid reset token",
     '1008': "Password reset successful",
     '1009': "Invaild token",
+    '1010': "Show Notification.",
+    '1011': "Notification Status update successfully....",
+    '1012': "Request not found",
+    '1013': "Select valid type",
 
     //ROOM
     '1101': "Added room successfully",
@@ -21,6 +25,7 @@ const MESSAGES = {
     '1108': "get all room amenities",
     '1109': "Room update successfully",
     '1110': "Deleted successfully",
+    '1111': 'You are Already Book Room',
 
     //saved post
     '1201': "post is saved",
@@ -45,6 +50,8 @@ const MESSAGES = {
     '2104': 'Get Rent & Sale successfully..',
     '2105': 'Sale Or Rent not found',
     '2106': 'Rent item booking successfully..',
+    '2107': 'you are already book item.',
+    '2108': 'Sale item booking successfully..',
 
     //roommate
     '2201': 'Add roommate  successfully..',
@@ -55,6 +62,7 @@ const MESSAGES = {
     // roommate booking
     '2301': 'Roommate Booking successfully',
     '2302': 'Enter a valid minimum stay',
+    '2303': 'You are Already Book roommate',
 
     //card
     '2401': 'card added',
