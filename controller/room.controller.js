@@ -356,6 +356,7 @@ const updateRoom = async (req, res) => {
             lat,
             lng,
         });
+        // console.log('newRoom', newRoom)
         let responseData = null;
         responseData = newRoom.toJSON();
 

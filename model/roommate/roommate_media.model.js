@@ -18,7 +18,7 @@ module.exports = (sequelize, Sequelize) => {
             }
         },
         media: {
-            type: Sequelize.TEXT,
+            type: Sequelize.STRING,
             allowNull: true,
             get() {
                 const rawValue = this.getDataValue('media');

@@ -15,5 +15,4 @@ router.get('/notifications', checkAuth.authUser, notificationController.notifica
 router.patch('/notifications-update', checkAuth.authUser, notificationController.updateNotification);
 
 
-
 module.exports = router;

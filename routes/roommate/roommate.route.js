@@ -17,5 +17,9 @@ router.get('/get-room', Auth.authUser, RoommateController.getRoommate);
 
 router.post('/book-roommate', Auth.authUser, RoommateController.bookingRoommate)
 
+router.patch('/update-roommate/:id', Auth.authUser, RoommateController.updateRoommate)
+
+router.delete('/delete-roommate', Auth.authUser, RoommateController.deleteRoommateMedia)
+
 
 module.exports = router;

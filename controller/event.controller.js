@@ -1,7 +1,7 @@
 const Validator = require("validatorjs");
 const db = require('../config/db.config');
 const { UploadFiles } = require('../helpers/file')
-const { Op } = require('sequelize')
+const { Op, sequelize } = require('sequelize')
 
 
 //...................models............
@@ -134,6 +134,89 @@ const createEvent = async (req, res) => {
 }
 
 
+//.....................update event......................
+const updateEvent = async (req, res) => {
+    try {
+        const eventId = req.params.id;
+        // console.log('eventId', eventId)
+
+        const findEvent = await Event.findByPk(eventId);
+        if (!findEvent) {
+            return RESPONSE.error(res, 'event not found');
+        }
+
+
+        const { event_title, event_details, seats, date, time, price, city, lat, long, category_id, event_amenities_id } = req.body;
+
+
+        if (event_amenities_id && event_amenities_id.length < 0) {
+            return RESPONSE.error(res, 1103)
+        }
+
+        const event = await findEvent.update({ event_title, event_details, seats, date, time, price, city, lat, long, category_id });
+
+        let responseData = null
+        responseData = event.toJSON();
+
+        if (event_amenities_id) {
+            await Selected_amenities.destroy({
+                where: { event_id: eventId }
+            });
+
+            const amenitieData = JSON.parse(event_amenities_id).map((item) => {
+                return {
+                    event_amenities_id: item,
+                    event_id: eventId
+                }
+            });
+            const createdAmenities = await Selected_amenities.bulkCreate(amenitieData);
+            responseData.selected_amenities = createdAmenities
+        }
+
+        
+        if (typeof req.files !== 'undefined' && req.files.length > 0) {
+            photos = await UploadFiles(req.files, 'images/event_images', 'image');
+        }
+        let event_photos = []
+        for (const image of photos) {
+            const eventPhoto = await Event_photos.create({
+                event_id: event.id,
+                photo: image
+            })
+            event_photos.push(eventPhoto)
+
+            responseData.event_photos = event_photos
+
+        }
+        return RESPONSE.success(res, 2009, responseData);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+
+//delete media by id
+const deleteEventPhotos = async (req, res) => {
+    try {
+        const ids = req.body.id;
+        // console.log('ids', ids);
+
+        const deletedMedia = [];
+        for (const id of ids) {
+            const media = await Event_photos.destroy({ where: { id } });
+            deletedMedia.push(media);
+        }
+
+        return RESPONSE.success(res, 1110);
+    } catch (error) {
+        console.error(error);
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+
+
 //....................event booking ...........................
 const eventBooking = async (req, res) => {
     let validation = new Validator(req.body, {
@@ -230,6 +313,8 @@ module.exports = {
     createEvent,
     eventBooking,
     eventBooking,
-    getEvent
+    getEvent,
+    updateEvent,
+    deleteEventPhotos
 }
 

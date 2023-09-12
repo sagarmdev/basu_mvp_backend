@@ -157,6 +157,138 @@ const addRoommate = async (req, res) => {
 }
 
 
+//...............add roommate...............
+const updateRoommate = async (req, res) => {
+    try {
+
+        const roommateId = req.params.id;
+        // console.log('eventId', eventId)
+
+        const roommate = await Roommate.findByPk(roommateId);
+        if (!roommate) {
+            return RESPONSE.error(res, 'Roommate not found');
+        }
+        const { city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, interest_id, social_id, lifestyle_id, message } = req.body;
+
+        if (interest_id && interest_id.length < 0) {
+            return RESPONSE.error(res, 1103)
+        }
+
+        if (social_id && social_id.length < 0) {
+            return RESPONSE.error(res, 1103)
+        }
+
+        if (lifestyle_id && lifestyle_id.length < 0) {
+            return RESPONSE.error(res, 1103)
+        }
+        let photo = [];
+        if (typeof req.files !== 'undefined' && req.files.length > 0) {
+
+            const data = req.files.filter((item) => item.fieldname == "image")
+            if (data.length > 1) {
+                return RESPONSE.error(res, 2202)
+            }
+
+            photo = await UploadFiles(data, 'images/roommate_media', 'image');
+        }
+
+        const updateRoommate = await roommate.update({ image: photo[0], city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, message })
+
+        let responseData = null
+        responseData = updateRoommate.toJSON();
+
+        if (updateRoommate) {
+            if (interest_id) {
+                await SelectedInterest.destroy({
+                    where: { roommate_id: roommateId }
+                });
+
+                const interestData = JSON.parse(interest_id).map((item) => {
+                    return {
+                        interest_id: item,
+                        roommate_id: roommateId
+                    }
+                });
+                const createdinterest = await SelectedInterest.bulkCreate(interestData);
+                responseData.selectedInterest = createdinterest
+            }
+
+
+            if (social_id) {
+                await SelectedSocial.destroy({
+                    where: { roommate_id: roommateId }
+                });
+
+                const socialData = JSON.parse(social_id).map((item) => {
+                    return {
+                        social_id: item,
+                        roommate_id: roommateId
+                    }
+                });
+                const createdSocial = await SelectedSocial.bulkCreate(socialData);
+                responseData.selectedSocials = createdSocial
+            }
+
+
+            if (lifestyle_id) {
+                await SelectedLifestyle.destroy({
+                    where: { roommate_id: roommateId }
+                });
+
+                const lifestyleData = JSON.parse(lifestyle_id).map((item) => {
+                    return {
+                        lifestyle_id: item,
+                        roommate_id: roommateId
+                    }
+                });
+                const createdLifstyle = await SelectedLifestyle.bulkCreate(lifestyleData);
+                responseData.selectedLifestyle = createdLifstyle
+            }
+
+
+            //.................upload media ..............
+            if (typeof req.files !== 'undefined' && req.files.length > 0) {
+                photos = await uploadRoommateFiles(req.files, 'images/roommate_media');
+            }
+
+            let mediaUrl = [];
+            for (const image of photos) {
+                const media = await Roommate_media.create({
+                    roommate_id: updateRoommate.id,
+                    media: image,
+                })
+                mediaUrl.push(media)
+                responseData.roommate_media = mediaUrl
+            }
+        }
+
+        return RESPONSE.success(res, 2204, responseData);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+//delete roommate media by id
+const deleteRoommateMedia = async (req, res) => {
+    try {
+        const ids = req.body.id;
+        // console.log('ids', ids);
+
+        const deletedMedia = [];
+        for (const id of ids) {
+            const media = await Roommate_media.destroy({ where: { id } });
+            deletedMedia.push(media);
+        }
+
+        return RESPONSE.success(res, 1110);
+    } catch (error) {
+        console.error(error);
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+
 //...............................get all roommate...............
 const getAllRoommate = async (req, res) => {
     let validation = new Validator(req.query, {
@@ -458,6 +590,7 @@ module.exports = {
     getAllRoommate,
     getRoommateById,
     bookingRoommate,
-    getRoommate
-
+    getRoommate,
+    updateRoommate,
+    deleteRoommateMedia
 }

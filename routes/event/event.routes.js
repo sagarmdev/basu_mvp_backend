@@ -15,7 +15,11 @@ router.post('/create-event', Auth.authUser, eventController.createEvent)
 
 router.get('/get-event', Auth.authUser, eventController.getEvent)
 
-router.post('/booking-event',Auth.authUser,eventController.eventBooking)
+router.post('/booking-event', Auth.authUser, eventController.eventBooking)
+
+router.patch('/update-event/:id', Auth.authUser, eventController.updateEvent)
+
+router.delete('/delete-event', Auth.authUser, eventController.deleteEventPhotos)
 
 
 module.exports = router;

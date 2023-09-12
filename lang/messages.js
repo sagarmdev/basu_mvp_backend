@@ -42,6 +42,7 @@ const MESSAGES = {
     '2006': 'event Booking successfully..',
     '2007': 'Ticket not available',
     '2008': 'get all events',
+    '2009': 'Event updated sucessfully.. ',
 
     //item sale & rent 
     '2101': 'Create item successfully..',
@@ -58,6 +59,7 @@ const MESSAGES = {
     '2202': 'You can upload only one image',
     '2203': 'Get roommate successfully',
     '2204': 'roommate data not found',
+    '2204': 'roommate updated successfully',
 
     // roommate booking
     '2301': 'Roommate Booking successfully',
