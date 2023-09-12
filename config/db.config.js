@@ -70,8 +70,9 @@ db.roommate_booking = require('../model/roommate/roommate_booking.model')(sequel
 //card
 db.card = require('../model/card/card.model')(sequelize, Sequelize);
 
-
-
+//chat
+db.conversations = require('../model/chat/conversations.model')(sequelize, Sequelize);
+db.conversations_chat = require('../model/chat/conversations_chat.model')(sequelize, Sequelize);
 //..........................relation................................
 
 // db.rooms.hasMany(db.room_amenities, { foreignKey: 'amenitieId' });
@@ -196,6 +197,20 @@ db.users.hasMany(db.roommate_booking, { foreignKey: 'user_id' });
 db.roommate_booking.belongsTo(db.users, { foreignKey: 'user_id' });
 
 
-db.sequelize.sync({ force: false });
+//chat
+db.conversations.belongsTo(db.users, { foreignKey: 'sender_id', as: 'sender' });
+db.users.hasMany(db.conversations, { foreignKey: 'sender_id', as: 'sender' });
+
+db.conversations.belongsTo(db.users, { foreignKey: 'receiver_id', as: 'receiver' });
+db.users.hasMany(db.conversations, { foreignKey: 'receiver_id', as: 'receiver' });
+
+db.conversations_chat.belongsTo(db.users, { foreignKey: 'sender_id' });
+db.users.hasMany(db.conversations_chat, { foreignKey: 'sender_id' });
+
+db.conversations_chat.belongsTo(db.conversations, { foreignKey: 'conversations_id', as: 'chat' });
+db.conversations.hasMany(db.conversations_chat, { foreignKey: 'conversations_id', as: 'chat' });
+
+
+db.sequelize.sync({ alert: true });
 
 module.exports = db;
