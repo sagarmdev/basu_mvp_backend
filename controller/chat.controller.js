@@ -1,10 +1,13 @@
 const db = require('../config/db.config');
 const { Op, Sequelize } = require('sequelize');
+const Validator = require('validatorjs');
+
 
 //.....................models...............
 const UserSession = db.user_sessions;
 const Conversations = db.conversations;
 const Conversations_chats = db.conversations_chat;
+
 
 let users = [];
 
@@ -78,11 +81,25 @@ const createMessage = async (data) => {
     }
 }
 
-
+                      
 //................Get conversations
-const getConversations = async (authUser) => {
+const getConversations = async (data) => {
     try {
-        const conversations = await Conversations.findAll({
+
+        const authUser = data.authUser;
+
+        let conditionOffset = {};
+        // Pagination
+        const page = Number(data.page) || 1;
+        const limit = Number(data.limit) || 15;
+        const offset = (page - 1) * limit;
+
+        if (limit && page) {
+            conditionOffset.limit = limit;
+            conditionOffset.offset = offset;
+        }
+
+        const conversations = await Conversations.findAndCountAll({
             where: {
                 [Op.or]: [
                     { receiver_id: authUser.userId },
@@ -100,12 +117,78 @@ const getConversations = async (authUser) => {
             order: [
                 [Sequelize.literal('(SELECT MAX(`created_at`) FROM `Conversations_chats` WHERE `conversations_id` = `Conversations`.`id`)'), 'DESC'],
             ],
+            ...conditionOffset
         });
 
-
+        conversations.page_Information = {
+            totalrecords: conversations.count,
+            lastpage: Math.ceil(conversations.count / limit),
+            currentpage: page,
+            previouspage: 0 + (page - 1)
+        }
         return conversations
     } catch (error) {
         console.log(error);
+    }
+}
+
+
+
+//.....................get chat By Id  API .....................
+
+const getChatById = async (req, res) => {
+    let validation = new Validator(req.query, {
+        receiver_id: 'required',
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+    try {
+        const { receiver_id } = req.query;
+        const authUser = req.user.id;
+
+        const page = req.query.page ? parseInt(req.query.page) : 1
+        const limit = req.query.limit ? parseInt(req.query.limit) : 15
+        const offset = 0 + (page - 1) * limit
+
+        const findConversation = await Conversations.findOne({
+            where: {
+                [Op.and]: [
+                    { sender_id: authUser },
+                    { receiver_id: receiver_id }
+                ]
+            },
+        });
+
+        if (!findConversation) {
+            return RESPONSE.error(res, 1014);
+        }
+
+        const findChat = await Conversations_chats.findAndCountAll({
+            where: {
+                conversations_id: findConversation.id,
+            },
+            limit: limit,
+            offset: offset,
+            order: [['createdAt', 'DESC']],
+
+        })
+
+        let responseData = {
+            chatData: findChat.rows,
+            page_information: {
+                totalrecords: findChat.count,
+                lastpage: Math.ceil(findChat.count / (limit * 3)),
+                currentpage: page,
+                previouspage: 0 + (page - 1),
+                nextpage: page < Math.ceil(findChat.count / (limit * 3)) ? page + 1 : 0
+            }
+        };
+        return RESPONSE.success(res, "get Chat Successfully", responseData)
+    } catch (error) {
+        console.log(error);
+        return RESPONSE.error(res, error.message);
     }
 }
 
@@ -133,10 +216,9 @@ async function socketEvent(io) {
 
         });
 
-        socket.on('getConversation', async () => {
-            authUser = socket.authUser;
-            console.log(authUser);
-            const conversation = await getConversations(authUser);
+        socket.on('getConversation', async (data) => {
+            data.authUser = socket.authUser;
+            const conversation = await getConversations(data);
             io.to(socket.id).emit("conversations", conversation);
 
         })
@@ -153,5 +235,6 @@ async function socketEvent(io) {
 
 module.exports = {
     socketEvent,
-    socketAuth
+    socketAuth,
+    getChatById
 }

@@ -13,7 +13,8 @@ const MESSAGES = {
     '1011': "Notification Status update successfully....",
     '1012': "Request not found",
     '1013': "Select valid type",
-
+    '1014': "ConverSation not found",
+    
     //ROOM
     '1101': "Added room successfully",
     '1102': "get all Room types",
