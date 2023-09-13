@@ -53,6 +53,7 @@ const MESSAGES = {
     '2106': 'Rent item booking successfully..',
     '2107': 'you are already book item.',
     '2108': 'Sale item booking successfully..',
+    '2109': 'item update successfully..',
 
     //roommate
     '2201': 'Add roommate  successfully..',

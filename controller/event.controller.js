@@ -137,10 +137,10 @@ const createEvent = async (req, res) => {
 //.....................update event......................
 const updateEvent = async (req, res) => {
     try {
+        const authUser = req.user.id;
         const eventId = req.params.id;
-        // console.log('eventId', eventId)
 
-        const findEvent = await Event.findByPk(eventId);
+        const findEvent = await Event.findOne({ where: { id: eventId, user_id: authUser } });
         if (!findEvent) {
             return RESPONSE.error(res, 'event not found');
         }
@@ -173,12 +173,12 @@ const updateEvent = async (req, res) => {
             responseData.selected_amenities = createdAmenities
         }
 
-        
+
         if (typeof req.files !== 'undefined' && req.files.length > 0) {
             photos = await UploadFiles(req.files, 'images/event_images', 'image');
         }
         let event_photos = []
-        for (const image of photos) {
+        for (const image of event_photos) {
             const eventPhoto = await Event_photos.create({
                 event_id: event.id,
                 photo: image
@@ -188,9 +188,28 @@ const updateEvent = async (req, res) => {
             responseData.event_photos = event_photos
 
         }
-        return RESPONSE.success(res, 2009, responseData);
+        return RESPONSE.success(res, 2009);
     } catch (error) {
         console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+//delet event
+const deleteEvent = async (req, res) => {
+    try {
+        const authUser = req.user.id;
+        const id = req.params.id;
+        const event = await Event.findOne({ where: { id: id, user_id: authUser } });
+        if (!event) {
+            return RESPONSE.error(res, 'event not found');
+        }
+
+        const media = await event.destroy({ where: { id: id } });
+
+        return RESPONSE.success(res, 1110);
+    } catch (error) {
+        console.error(error);
         return RESPONSE.error(res, error.message);
     }
 }
@@ -200,12 +219,32 @@ const updateEvent = async (req, res) => {
 const deleteEventPhotos = async (req, res) => {
     try {
         const ids = req.body.id;
-        // console.log('ids', ids);
-
+        // console.log('ids', ids)
+        const authUser = req.user.id;
         const deletedMedia = [];
-        for (const id of ids) {
-            const media = await Event_photos.destroy({ where: { id } });
-            deletedMedia.push(media);
+
+        const eventIds = await Event_photos.findAll({
+            where: { id: ids },
+            attributes: ['event_id'],
+        });
+        // console.log('eventIds', eventIds)
+
+        for (const event of eventIds) {
+            const event_id = event.event_id;
+
+            // Use Items.findOne to check if the associated item exists
+            const associatedItem = await Event.findOne({
+                where: { id: event_id, user_id: authUser },
+            });
+            // console.log('associatedItem', associatedItem)
+
+            if (associatedItem) {
+                // Use await with Items_photos.destroy
+                await Event_photos.destroy({ where: { id: ids } });
+                deletedMedia.push(event.id);
+            } else {
+                return RESPONSE.error(res, "You are not allowed to delete this photo");
+            }
         }
 
         return RESPONSE.success(res, 1110);
@@ -315,6 +354,7 @@ module.exports = {
     eventBooking,
     getEvent,
     updateEvent,
-    deleteEventPhotos
+    deleteEventPhotos,
+    deleteEvent
 }
 

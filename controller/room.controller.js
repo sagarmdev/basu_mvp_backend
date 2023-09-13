@@ -259,6 +259,17 @@ const addRooms = async (req, res) => {
                         }
                     ]
                 },
+                {
+                    model: Roomtype,
+                    as: 'roomType',
+                    include: [
+                        {
+                            model: Type,
+                            as: 'roomtype',
+                            attributes: ['name', 'id']
+                        }
+                    ]
+                }
             ],
         })
 
@@ -274,13 +285,11 @@ const addRooms = async (req, res) => {
 //update room
 const updateRoom = async (req, res) => {
     try {
+        const authUser = req.user.id;
         const roomId = req.params.id;
-        // console.log('roomId', roomId)
 
-        // Find the room by ID
-        const room = await Room.findByPk(roomId);
+        const room = await Room.findOne({ where: { id: roomId, user_id: authUser } });
 
-        // Check if the room exists
         if (!room) {
             return RESPONSE.error(res, 'Room not found');
         }
@@ -458,24 +467,24 @@ const updateRoom = async (req, res) => {
         }
 
 
-        return RESPONSE.success(res, 1109, responseData);
+        return RESPONSE.success(res, 1109);
     } catch (error) {
         console.log(error)
         return RESPONSE.error(res, error.message);
     }
 }
 
-//delete media by id
-const deleteMedia = async (req, res) => {
+//delete room
+const deleteRoom = async (req, res) => {
     try {
-        const ids = req.body.id;
-        // console.log('ids', ids);
-
-        const deletedMedia = [];
-        for (const id of ids) {
-            const media = await Media.destroy({ where: { id } });
-            deletedMedia.push(media);
+        const authUser = req.user.id;
+        const id = req.params.id;
+        const room = await Room.findOne({ where: { id: id, user_id: authUser } });
+        if (!room) {
+            return RESPONSE.error(res, 'room not found');
         }
+
+        const media = await room.destroy({ where: { id: id } });
 
         return RESPONSE.success(res, 1110);
     } catch (error) {
@@ -484,6 +493,39 @@ const deleteMedia = async (req, res) => {
     }
 }
 
+//delete media by id
+const deleteMedia = async (req, res) => {
+    try {
+        const ids = req.body.id;
+        const authUser = req.user.id;
+        const deletedMedia = [];
+
+        const roomIds = await Media.findAll({
+            where: { id: ids },
+            attributes: ['roomId'],
+        });
+
+        for (const room of roomIds) {
+            const roomId = room.roomId;
+
+            const associatedItem = await Room.findOne({
+                where: { id: roomId, user_id: authUser },
+            });
+
+            if (associatedItem) {
+                await Media.destroy({ where: { id: ids } });
+                deletedMedia.push(room.id);
+            } else {
+                return RESPONSE.error(res, "You are not allowed to delete this photo");
+            }
+        }
+
+        return RESPONSE.success(res, 1110);
+    } catch (error) {
+        console.error(error);
+        return RESPONSE.error(res, error.message);
+    }
+}
 
 //get All rooms
 const getAllRooms = async (req, res) => {
@@ -736,5 +778,6 @@ module.exports = {
     getAllamenities,
     getAllrules,
     updateRoom,
-    deleteMedia
+    deleteMedia,
+    deleteRoom
 }

@@ -22,4 +22,10 @@ router.post('/booking-rent-item', Auth.authUser, ItemController.bookingRentItem)
 
 router.post('/booking-sale-item', Auth.authUser, ItemController.bookingSaleItem);
 
+router.patch('/update-item/:id', Auth.authUser, ItemController.updateItem);
+
+router.delete('/delete-item-media', Auth.authUser, ItemController.deleteItemPhotos);
+
+router.delete('/delete-item/:id', Auth.authUser, ItemController.deleteItem);
+
 module.exports = router;

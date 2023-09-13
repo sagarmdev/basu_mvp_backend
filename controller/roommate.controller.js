@@ -160,11 +160,11 @@ const addRoommate = async (req, res) => {
 //...............add roommate...............
 const updateRoommate = async (req, res) => {
     try {
-
+        const authUser = req.user.id;
         const roommateId = req.params.id;
-        // console.log('eventId', eventId)
 
-        const roommate = await Roommate.findByPk(roommateId);
+
+        const roommate = await Roommate.findOne({ where: { id: roommateId, user_id: authUser } });
         if (!roommate) {
             return RESPONSE.error(res, 'Roommate not found');
         }
@@ -262,23 +262,59 @@ const updateRoommate = async (req, res) => {
             }
         }
 
-        return RESPONSE.success(res, 2204, responseData);
+        return RESPONSE.success(res, 2204);
     } catch (error) {
         console.log(error)
         return RESPONSE.error(res, error.message);
     }
 }
 
+
+//delete roommate
+const deleteRoommate = async (req, res) => {
+    try {
+        const authUser = req.user.id;
+        const id = req.params.id;
+        const roommate = await Roommate.findOne({ where: { id: id, user_id: authUser } });
+        if (!roommate) {
+            return RESPONSE.error(res, 'room not found');
+        }
+
+        const media = await roommate.destroy({ where: { id: id } });
+
+        return RESPONSE.success(res, 1110);
+    } catch (error) {
+        console.error(error);
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+
 //delete roommate media by id
 const deleteRoommateMedia = async (req, res) => {
     try {
         const ids = req.body.id;
-        // console.log('ids', ids);
-
+        const authUser = req.user.id;
         const deletedMedia = [];
-        for (const id of ids) {
-            const media = await Roommate_media.destroy({ where: { id } });
-            deletedMedia.push(media);
+
+        const roommateIds = await Roommate_media.findAll({
+            where: { id: ids },
+            attributes: ['roommate_id'],
+        });
+
+        for (const item of roommateIds) {
+            const roommate_id = item.roommate_id;
+
+            const associatedItem = await Roommate.findOne({
+                where: { id: roommate_id, user_id: authUser },
+            });
+
+            if (associatedItem) {
+                await Roommate_media.destroy({ where: { id: ids } });
+                deletedMedia.push(item.id);
+            } else {
+                return RESPONSE.error(res, "You are not allowed to delete this photo");
+            }
         }
 
         return RESPONSE.success(res, 1110);
@@ -592,5 +628,6 @@ module.exports = {
     bookingRoommate,
     getRoommate,
     updateRoommate,
-    deleteRoommateMedia
+    deleteRoommateMedia,
+    deleteRoommate
 }

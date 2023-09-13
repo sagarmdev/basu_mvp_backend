@@ -19,7 +19,9 @@ router.post('/booking-event', Auth.authUser, eventController.eventBooking)
 
 router.patch('/update-event/:id', Auth.authUser, eventController.updateEvent)
 
-router.delete('/delete-event', Auth.authUser, eventController.deleteEventPhotos)
+router.delete('/delete-event-media', Auth.authUser, eventController.deleteEventPhotos)
+
+router.delete('/delete-event/:id', Auth.authUser, eventController.deleteEvent)
 
 
 module.exports = router;

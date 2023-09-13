@@ -74,6 +74,121 @@ const addItem = async (req, res) => {
 }
 
 
+//..............add item for sale & rent.................
+const updateItem = async (req, res) => {
+    try {
+        const authUser = req.user.id;
+        const itemId = req.params.id;
+        const { title, description, price, city, price_duration, security_deposite, lat, long, item_category_id } = req.body;
+
+        // console.log('eventId', eventId)
+
+        const item = await Items.findOne({ where: { id: itemId, user_id: authUser } });
+        if (!item) {
+            return RESPONSE.error(res, 'item not found');
+        }
+
+        const itemData = await item.update(
+            { title, description, price, city, price_duration, security_deposite, lat, long, item_category_id },
+
+        );
+
+        //..................upload photo....
+        if (itemData) {
+
+            let photos = [];
+            if (typeof req.files !== 'undefined' && req.files.length > 0) {
+                photos = await UploadFiles(req.files, 'images/item_images', 'mediaImg');
+            }
+            for (const image of photos) {
+                await Items_photos.create({
+                    items_id: itemData.id,
+                    photo: image
+                })
+            }
+        }
+
+        const findItem = await Items.findOne({
+            where: { id: itemData.id },
+            include: [
+                {
+                    model: Items_photos,
+                    attributes: ['photo', 'id']
+                },
+                {
+                    model: Item_categories,
+                    attributes: ['name', 'id']
+                },
+            ],
+        });
+
+        return RESPONSE.success(res, 2109);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+//item delete
+const deleteItem = async (req, res) => {
+    try {
+        const authUser = req.user.id;
+        const id = req.params.id;
+        const item = await Items.findOne({ where: { id: id, user_id: authUser } });
+        if (!item) {
+            return RESPONSE.error(res, 'item not found');
+        }
+
+        const media = await item.destroy({ where: { id: id } });
+
+        return RESPONSE.success(res, 1110);
+    } catch (error) {
+        console.error(error);
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+
+//delete media by id
+
+const deleteItemPhotos = async (req, res) => {
+    try {
+        const ids = req.body.id;
+        // console.log('ids', ids)
+        const authUser = req.user.id;
+        const deletedMedia = [];
+
+        const itemsIds = await Items_photos.findAll({
+            where: { id: ids },
+            attributes: ['items_id'],
+        });
+        // console.log('itemsIds', itemsIds)
+
+        for (const item of itemsIds) {
+            const items_id = item.items_id;
+
+
+            const associatedItem = await Items.findOne({
+                where: { id: items_id, user_id: authUser },
+            });
+            // console.log('associatedItem', associatedItem)
+
+            if (associatedItem) {
+
+                await Items_photos.destroy({ where: { id: ids } });
+                deletedMedia.push(item.id);
+            } else {
+                return RESPONSE.error(res, "You are not allowed to delete this photo");
+            }
+        }
+
+        return RESPONSE.success(res, 1110);
+    } catch (error) {
+        console.error(error);
+        return RESPONSE.error(res, error.message);
+    }
+}
+
 
 //.......................get All Items_categories.......
 const getAllItemsCategories = async (req, res) => {
@@ -334,7 +449,10 @@ module.exports = {
     getRentAndSaleById,
     bookingRentItem,
     getRentAndSale,
-    bookingSaleItem
+    bookingSaleItem,
+    updateItem,
+    deleteItemPhotos,
+    deleteItem
 }
 
 
