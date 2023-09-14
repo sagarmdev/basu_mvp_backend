@@ -21,7 +21,7 @@ const Roommate = db.roommate
 //................get All  notification .....................
 const notification = async (req, res) => {
     try {
-        const { request, id, type } = req.query;
+        // const { request, id, type } = req.query;
 
         const authUser = req.user;
 

@@ -281,7 +281,6 @@ const eventBooking = async (req, res) => {
             }
         });
 
-
         if (isExist.length) {
             return RESPONSE.error(res, 2107)
         }

@@ -262,7 +262,7 @@ const updateRoommate = async (req, res) => {
             }
         }
 
-        return RESPONSE.success(res, 2204);
+        return RESPONSE.success(res, 2205);
     } catch (error) {
         console.log(error)
         return RESPONSE.error(res, error.message);

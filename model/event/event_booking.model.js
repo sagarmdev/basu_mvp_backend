@@ -18,7 +18,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.BIGINT.UNSIGNED,
             allowNull: false,
             references: {
-                model: 'items',
+                model: 'events',
                 key: 'id'
             }
         },
