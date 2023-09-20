@@ -239,9 +239,8 @@ const updateProfile = async (req, res) => {
             req.body.picture = `/profile_image/${profileImage}`
         }
         await Users.update(body, {
-            where: { id: id }, // Provide the where condition with the user's id
+            where: { id: id }, 
         });
-        // Refresh the user object after update
         const updatedUser = await Users.findByPk(id);
         return RESPONSE.success(res, 1007, updatedUser);
     } catch (error) {

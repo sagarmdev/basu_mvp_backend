@@ -97,12 +97,15 @@ module.exports = (sequelize, Sequelize) => {
         image: {
             type: Sequelize.TEXT,
             allowNull: true,
-            get() {
-                const rawValue = this.getDataValue('image');
-                return rawValue ? ASSETS.getMediaUrl(rawValue, "roommate_media") : null;
+            // get() {
+            //     const rawValue = this.getDataValue('image');
+            //     return rawValue ? ASSETS.getMediaUrl(rawValue, "roommate_media") : null;
+            // }
+            get: function (val) {
+                return `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDJP1wbyGV9xQvRrPHKLAJ_C8MTzPeIDPwW_Ut8Po&s`
+                // return `${process.env.BACKEND_URL}/${val}`
             }
         },
-
         message: {
             type: Sequelize.STRING,
             allowNull: false,

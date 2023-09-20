@@ -343,6 +343,96 @@ const getEvent = async (req, res) => {
     }
 };
 
+//...........get all event............
+const getAllEvents = async (req, res) => {
+    try {
+        const authUser = req.user;
+        const findEvent = await Event.findAll({
+            include: [
+                {
+                    model: Event_photos,
+                    attributes: ['photo', 'id']
+                },
+                {
+                    model: Event_categories,
+                    attributes: ['name', 'id']
+                },
+                {
+                    model: Selected_amenities,
+                    attributes: ['event_amenities_id', 'id'],
+                    include: [
+                        {
+                            model: Event_amenities,
+                            attributes: ['name', 'id']
+                        }
+                    ]
+                }
+            ],
+        });
+        // if (!findEvent.length) {
+        //     return RESPONSE.error(res, 2010);
+        // }
+        return RESPONSE.success(res, 2008, findEvent);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+//.................get all event with filter.....................
+const getEventWithFilter = async (req, res) => {
+    let validation = new Validator(req.query, {
+        category_id: 'required',
+        date: 'date'
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+    try {
+        const { category_id, date, city } = req.query;
+        let condition = {}
+        if (category_id) {
+            condition.category_id = category_id
+        }
+        if (city) {
+            condition.city = city
+        }
+        if (date) {
+            condition.date = date
+        }
+        const findEvent = await Event.findAll({
+            where: condition,
+            include: [
+                {
+                    model: Event_photos,
+                    attributes: ['photo', 'id']
+                },
+                {
+                    model: Event_categories,
+                    attributes: ['name', 'id']
+                },
+                {
+                    model: Selected_amenities,
+                    attributes: ['event_amenities_id', 'id'],
+                    include: [
+                        {
+                            model: Event_amenities,
+                            attributes: ['name', 'id']
+                        }
+                    ]
+                }
+            ],
+        })
+        if (!findEvent.length) {
+            return RESPONSE.error(res, 2010);
+        }
+        return RESPONSE.success(res, 2008, findEvent);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
 
 
 module.exports = {
@@ -354,6 +444,8 @@ module.exports = {
     getEvent,
     updateEvent,
     deleteEventPhotos,
-    deleteEvent
+    deleteEvent,
+    getAllEvents,
+    getEventWithFilter
 }
 

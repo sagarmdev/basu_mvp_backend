@@ -23,5 +23,9 @@ router.delete('/delete-event-media', Auth.authUser, eventController.deleteEventP
 
 router.delete('/delete-event/:id', Auth.authUser, eventController.deleteEvent)
 
+router.get('/get-All-events', Auth.authUser, eventController.getAllEvents);
+
+router.get('/get-event-with-filter', Auth.authUser, eventController.getEventWithFilter)
+
 
 module.exports = router;

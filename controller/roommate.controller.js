@@ -6,6 +6,7 @@ const randomstring = require('randomstring')
 
 //...................models............
 const Roommate = db.roommate;
+const Users = db.users;
 const Roommate_media = db.roommate_media;
 const Roommate_social = db.roommate_socials;
 const Roommate_interests = db.roommate_interests;
@@ -56,6 +57,7 @@ const addRoommate = async (req, res) => {
         const { city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, interest_id, social_id, lifestyle_id, message } = req.body;
 
         const authUser = req.user.id
+
 
         let photo = [];
         if (typeof req.files !== 'undefined' && req.files.length > 0) {
@@ -146,8 +148,14 @@ const addRoommate = async (req, res) => {
                         }
                     ],
                 },
+                {
+                    model: Users,
+                    attributes: ['name']
+                }
             ],
         });
+
+
 
         return RESPONSE.success(res, 2201, findRoommate);
     } catch (error) {
@@ -414,6 +422,10 @@ const getAllRoommate = async (req, res) => {
                         }
                     ],
                 },
+                {
+                    model: Users,
+                    attributes: ['name']
+                }
             ]
         });
 
@@ -483,6 +495,10 @@ const getRoommateById = async (req, res) => {
                         }
                     ],
                 },
+                {
+                    model: Users,
+                    attributes: ['name']
+                }
             ],
         });
 
@@ -543,6 +559,10 @@ const getRoommate = async (req, res) => {
                         }
                     ],
                 },
+                {
+                    model: Users,
+                    attributes: ['name']
+                }
             ],
         });
 

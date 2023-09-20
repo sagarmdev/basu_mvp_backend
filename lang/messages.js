@@ -44,6 +44,7 @@ const MESSAGES = {
     '2007': 'Ticket not available',
     '2008': 'get all events',
     '2009': 'Event updated sucessfully.. ',
+    '2010': 'Event not found. ',
 
     //item sale & rent 
     '2101': 'Create item successfully..',
