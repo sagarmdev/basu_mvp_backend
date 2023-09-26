@@ -282,6 +282,7 @@ const eventBooking = async (req, res) => {
         });
 
         if (isExist.length) {
+            await trans.rollback();
             return RESPONSE.error(res, 2107)
         }
 
