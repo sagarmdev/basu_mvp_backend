@@ -133,7 +133,7 @@ const addRoommate = async (req, res) => {
                     include: [
                         {
                             model: Roommate_social,
-                            attributes: ['name', 'id']
+                            attributes: ['name', 'icon_url', 'id']
                         }
                     ],
                 },
@@ -480,7 +480,7 @@ const getRoommateById = async (req, res) => {
                     include: [
                         {
                             model: Roommate_social,
-                            attributes: ['name', 'id']
+                            attributes: ['name', 'icon_url', 'id']
                         }
                     ],
                 },
@@ -497,7 +497,7 @@ const getRoommateById = async (req, res) => {
                 },
                 {
                     model: Users,
-                    attributes: ['name']
+                    attributes: ['name', 'address']
                 }
             ],
         });

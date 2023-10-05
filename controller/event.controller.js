@@ -262,6 +262,7 @@ const eventBooking = async (req, res) => {
         event_id: 'required',
         participants: 'required|numeric|min:1',
     });
+    // console.log('req.body', req.body)
     if (validation.fails()) {
         firstMessage = Object.keys(validation.errors.all())[0];
         return RESPONSE.error(res, validation.errors.first(firstMessage))

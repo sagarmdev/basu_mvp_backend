@@ -18,9 +18,13 @@ module.exports = (sequelize, Sequelize) => {
         url: {
             type: Sequelize.STRING(200),
             allowNull: true,
-            get() {
-                const rawValue = this.getDataValue('url');
-                return rawValue ? ASSETS.getProfileUrl(rawValue) : null;
+            // get() {
+            //     const rawValue = this.getDataValue('url');
+            //     return rawValue ? ASSETS.getProfileUrl(rawValue) : null;
+            // }
+            get: function (val) {
+                return `https://hips.hearstapps.com/hmg-prod/images/cute-room-ideas-1677096334.png`
+                // return `${process.env.BACKEND_URL}/${val}`
             }
         },
         type: {
