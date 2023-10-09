@@ -14,7 +14,9 @@ const MESSAGES = {
     '1012': "Request not found",
     '1013': "Select valid type",
     '1014': "ConverSation not found",
-    
+    '1015': "Update profile successfully",
+    '1016': "get profile successfully",
+
     //ROOM
     '1101': "Added room successfully",
     '1102': "get all Room types",
@@ -63,6 +65,9 @@ const MESSAGES = {
     '2203': 'Get roommate successfully',
     '2204': 'roommate data not found',
     '2205': 'roommate updated successfully',
+    '2206': 'get all lifestyle',
+    '2207': 'get all socialmedia',
+    '2208': 'get all interest',
 
     // roommate booking
     '2301': 'Roommate Booking successfully',

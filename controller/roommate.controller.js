@@ -20,12 +20,50 @@ const Roommate_booking = db.roommate_booking;
 const { uploadRoommateFiles, UploadFiles } = require('../helpers/file')
 
 
+//get all lifestyle
+const getAllLifestyle = async (req, res) => {
+    try {
+        const selectedLifestyle = await Lifestyle.findAll();
+
+        return RESPONSE.success(res, 2206, selectedLifestyle);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+//get all interset
+const getAllSocialmedia = async (req, res) => {
+    try {
+        const selectedSocial = await Roommate_social.findAll();
+
+        return RESPONSE.success(res, 2207, selectedSocial);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+const getAllInterest = async (req, res) => {
+    try {
+        const selectedInterest = await Roommate_interests.findAll();
+
+        return RESPONSE.success(res, 2208, selectedInterest);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
 //...............add roommate...............
 const addRoommate = async (req, res) => {
+    // console.log('req.body', req.body)
+    // console.log('req.files', req.files)
     let validation = new Validator(req.body, {
         city: 'required|string',
         lat: 'required',
         long: 'required',
+        address: 'required',
         gender: 'required|in:Male,Female,Other',
         age: 'required|numeric',
         Occupation: 'required|string',
@@ -36,12 +74,10 @@ const addRoommate = async (req, res) => {
         bathrooms: 'required|numeric',
         bedrooms: 'required|numeric',
         no_of_roommates: 'required|numeric',
-        required_roommate: 'required|numeric',
         marital_status: 'required|in:Single,Married',
         gender_preference: 'required|in:Male,Female,Other',
         preference_food_choice: 'required|in:Vegetarian,Non-Vegetarian',
         preference_age: 'required|in:12-18 Year,18-35 Year,35-50 Year',
-        lifestyle: 'required|in:Pet Friendly,Non-smoker',
         message: 'required|string',
         interest_id: 'required|array',
         social_id: 'required|array',
@@ -54,7 +90,7 @@ const addRoommate = async (req, res) => {
     }
 
     try {
-        const { city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, interest_id, social_id, lifestyle_id, message } = req.body;
+        const { city, lat, long, address, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, interest_id, social_id, lifestyle_id, message } = req.body;
 
         const authUser = req.user.id
 
@@ -63,14 +99,14 @@ const addRoommate = async (req, res) => {
         if (typeof req.files !== 'undefined' && req.files.length > 0) {
 
             const data = req.files.filter((item) => item.fieldname == "image")
-            if (data.length > 1) {
-                return RESPONSE.error(res, 2202)
-            }
+            // if (data.length > 1) {
+            //     return RESPONSE.error(res, 2202)
+            // }
 
             photo = await UploadFiles(data, 'images/roommate_media', 'image');
         }
 
-        const addRoommate = await Roommate.create({ user_id: authUser, image: photo[0], city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, message })
+        const addRoommate = await Roommate.create({ user_id: authUser, image: photo[0], city, lat, long, address, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, message })
         if (addRoommate) {
 
             for (const selectedInterest of interest_id) {
@@ -193,9 +229,9 @@ const updateRoommate = async (req, res) => {
         if (typeof req.files !== 'undefined' && req.files.length > 0) {
 
             const data = req.files.filter((item) => item.fieldname == "image")
-            if (data.length > 1) {
-                return RESPONSE.error(res, 2202)
-            }
+            // if (data.length > 1) {
+            //     return RESPONSE.error(res, 2202)
+            // }
 
             photo = await UploadFiles(data, 'images/roommate_media', 'image');
         }
@@ -649,5 +685,8 @@ module.exports = {
     getRoommate,
     updateRoommate,
     deleteRoommateMedia,
-    deleteRoommate
+    deleteRoommate,
+    getAllInterest,
+    getAllSocialmedia,
+    getAllLifestyle
 }

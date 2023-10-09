@@ -26,6 +26,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
+        address: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
         gender: {
             type: Sequelize.STRING,
             enum: ['Male', 'Female', 'Other'],
@@ -69,10 +73,6 @@ module.exports = (sequelize, Sequelize) => {
         no_of_roommates: {
             type: Sequelize.INTEGER,
             allowNull: false,
-        },
-        required_roommate: {
-            type: Sequelize.INTEGER,
-            allowNull: false
         },
         marital_status: {
             type: Sequelize.STRING,

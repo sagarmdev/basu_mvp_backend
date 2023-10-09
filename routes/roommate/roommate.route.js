@@ -23,6 +23,14 @@ router.delete('/delete-roommate-media', Auth.authUser, RoommateController.delete
 
 router.delete('/delete-roommate/:id', Auth.authUser, RoommateController.deleteRoommate)
 
+router.get('/get-all-lifestyle', RoommateController.getAllLifestyle);
+
+router.get('/get-all-socialmedia', RoommateController.getAllSocialmedia);
+
+router.get('/get-all-interest', RoommateController.getAllInterest);
+
+
+
 
 
 module.exports = router;

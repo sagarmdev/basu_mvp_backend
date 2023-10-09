@@ -11,6 +11,52 @@ const config = require('../config/config')
 const UserSession = db.user_sessions;
 // const jwt = require('jsonwebtoken');
 
+// const signUp = async (req, res) => {
+//     try {
+//         let validation = new Validator(req.body, {
+//             name: 'required',
+//             email: 'required',
+//             password: 'required',
+//         });
+
+//         if (validation.fails()) {
+//             firstMessage = Object.keys(validation.errors.all())[0];
+//             return RESPONSE.error(res, validation.errors.first(firstMessage), '', 400);
+//         }
+//         const { name, email, password } = req.body;
+
+//         const existingUser = await Users.findOne({ where: { email: email } });
+
+//         if (existingUser) {
+//             return RESPONSE.error(res, 1003);
+//         }
+
+//         const hashedPassword = await bcrypt.hash(password, 10);
+
+//         const newUser = await Users.create({
+//             name,
+//             email,
+//             password: hashedPassword,
+//         });
+//         let userToken;
+//         if (newUser) {
+//             newUser = newUser.toJSON();
+//             userToken = await UserSession.createToken(newUser.id);
+//         }
+
+//         const addUser = {
+//             newUser: {
+//                 ...newUser,
+//                 token: userToken,
+//             },
+//         }
+
+//         return RESPONSE.success(res, 1001, addUser);
+//     } catch (error) {
+//         console.log(error)
+//         return RESPONSE.error(res, error.message);
+//     }
+// }
 const signUp = async (req, res) => {
     try {
         let validation = new Validator(req.body, {
@@ -33,19 +79,25 @@ const signUp = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = await Users.create({
+        const user = await Users.create({
             name,
             email,
             password: hashedPassword,
         });
 
-        const addUser = {
-            newUser,
-        }
+        if (user) {
+            const newUser = user.toJSON();
+            const userToken = await UserSession.createToken(newUser.id);
+            newUser.token = userToken;
 
-        return RESPONSE.success(res, 1001, addUser);
+            const addUser = {
+                newUser,
+            }
+
+            return RESPONSE.success(res, 1001, addUser);
+        }
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return RESPONSE.error(res, error.message);
     }
 }
@@ -239,10 +291,27 @@ const updateProfile = async (req, res) => {
             req.body.picture = `/profile_image/${profileImage}`
         }
         await Users.update(body, {
-            where: { id: id }, 
+            where: { id: id },
         });
         const updatedUser = await Users.findByPk(id);
-        return RESPONSE.success(res, 1007, updatedUser);
+        return RESPONSE.success(res, 1015, updatedUser);
+    } catch (error) {
+        console.log(error);
+        return RESPONSE.error(res, error.message);
+    }
+}
+
+const getProfile = async (req, res) => {
+    try {
+        const { user: { id } } = req
+        const oneUser = await Users.findOne({
+            where: { id: id }, attributes: {
+                exclude: ['password', 'device', 'course', 'classYear', 'active', 'deletedAt', 'updatedAt', 'createdAt', 'generateOtp', 'resetTokenExpiry']
+            }
+        })
+
+
+        return RESPONSE.success(res, 1016, oneUser);
     } catch (error) {
         console.log(error);
         return RESPONSE.error(res, error.message);
@@ -250,7 +319,6 @@ const updateProfile = async (req, res) => {
 }
 
 
-
-module.exports = { signUp, login, forgotPassword, resetPassword, updateProfile };
+module.exports = { signUp, login, forgotPassword, resetPassword, updateProfile, getProfile };
 
 

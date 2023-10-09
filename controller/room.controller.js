@@ -47,6 +47,7 @@ const addRooms = async (req, res) => {
         description: 'required|string',
         type: 'required',
         bedRooms: 'required',
+        address: 'required',
         bathRooms: 'required',
         tenant: 'required',
         liveWith: 'required|in:Both,Male,Female',
@@ -74,6 +75,7 @@ const addRooms = async (req, res) => {
             bedRooms,
             bathRooms,
             tenant,
+            address,
             liveWith,
             amenities,
             rules,
@@ -128,6 +130,7 @@ const addRooms = async (req, res) => {
             description,
             bedRooms,
             bathRooms,
+            address,
             tenant,
             liveWith,
             prefereOccupation,
@@ -537,8 +540,9 @@ const getAllRooms = async (req, res) => {
         return RESPONSE.error(res, validation.errors.first(firstMessage))
     }
     try {
-        const { city, bedRooms, bathRooms, tenant, availibility, minimumStay, liveWith, max_budget, min_budget } = req.query;
+        const { city, bedRooms, bathRooms, tenant, availibility, minimumStay, liveWith, max_budget, min_budget, type } = req.query;
         let condition = {}
+
         if (Object.keys(req.query).length === 0) {
             const rooms = await Room.findAll({
                 include: [
@@ -566,6 +570,17 @@ const getAllRooms = async (req, res) => {
                             }
                         ]
                     },
+                    {
+                        model: Roomtype,
+                        as: 'roomType',
+                        include: [
+                            {
+                                model: Type,
+                                as: 'roomtype'
+                            }
+                        ],
+
+                    }
                 ],
             });
             return RESPONSE.success(res, 1104, rooms);
@@ -638,8 +653,14 @@ const getAllRooms = async (req, res) => {
                             model: Type,
                             as: 'roomtype'
                         }
+                    ],
+                    where: [
+                        {
+                            ...(type) && { typeId: type }
+                        }
                     ]
                 }
+
             ],
         });
 

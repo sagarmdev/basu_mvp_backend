@@ -23,6 +23,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING(200),
             allowNull: true,
         },
+        address: {
+            type: Sequelize.STRING(200),
+            allowNull: true,
+        },
         bedRooms: {
             type: Sequelize.INTEGER(50),
             // defaultValue: 1,
