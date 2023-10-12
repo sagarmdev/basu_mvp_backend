@@ -1,6 +1,7 @@
 const Validator = require('validatorjs');
 const db = require("../config/db.config");
 const { Sequelize, Op } = require('sequelize');
+const Users = db.users;
 const roomAmenitie = db.room_amenities;
 const Media = db.media;
 const roomRules = db.room_rules;
@@ -751,7 +752,8 @@ const getAllRoomsById = async (req, res) => {
                     include: [
                         {
                             model: Houseamenities,
-                            as: 'houseamenitie'
+                            as: 'houseamenitie',
+                            attributes: ['id', 'name', 'amenities_img'],
                         }
                     ]
                 },
@@ -761,7 +763,7 @@ const getAllRoomsById = async (req, res) => {
                     include: [
                         {
                             model: Houserules,
-                            as: 'houserules'
+                            as: 'houserules',
                         }
                     ]
                 },
@@ -774,6 +776,10 @@ const getAllRoomsById = async (req, res) => {
                             as: 'roomtype'
                         }
                     ]
+                },
+                {
+                    model: Users,
+                    attributes: ['name', 'picture']
                 }
             ],
         });

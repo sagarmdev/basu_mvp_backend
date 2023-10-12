@@ -5,6 +5,7 @@ const { UploadFiles } = require('../helpers/file')
 
 
 //...................models............
+const Users = db.users;
 const Item_categories = db.items_categories;
 const Items = db.items;
 const Items_photos = db.item_photos;
@@ -293,6 +294,10 @@ const getRentAndSaleById = async (req, res) => {
                         model: Item_categories,
                         attributes: ['name', 'id']
                     },
+                    {
+                        model: Users,
+                        attributes: ['name', 'picture']
+                    }
                 ],
             })
 

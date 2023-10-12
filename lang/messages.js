@@ -31,9 +31,16 @@ const MESSAGES = {
     '1111': 'You are Already Book Room',
 
     //saved post
-    '1201': "post is saved",
+    '1201': "Room unsaved successfully",
     '1202': "get all posts",
     '1203': "post not found!",
+    '1204': "Room saved successfully",
+    '1205': "Event unsaved successfully",
+    '1206': "Event saved successfully",
+    '1207': "Roommate unsaved successfully",
+    '1208': "Roommate saved successfully",
+    '1209': "Item unsaved successfully",
+    '1210': "Item saved successfully",
 
 
     //event 

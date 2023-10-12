@@ -80,6 +80,9 @@ db.conversations_chat = require('../model/chat/conversations_chat.model')(sequel
 // db.room_amenities.belongsTo(db.rooms, { foreignKey: 'amenitieId' });
 
 //room
+db.users.hasMany(db.rooms, { foreignKey: 'user_id' });
+db.rooms.belongsTo(db.users, { foreignKey: 'user_id' });
+
 db.media.belongsTo(db.rooms, { foreignKey: "roomId" });
 db.rooms.hasMany(db.media, { foreignKey: "roomId" });
 

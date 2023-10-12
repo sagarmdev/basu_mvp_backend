@@ -36,7 +36,6 @@ const getAllLifestyle = async (req, res) => {
 const getAllSocialmedia = async (req, res) => {
     try {
         const selectedSocial = await Roommate_social.findAll();
-
         return RESPONSE.success(res, 2207, selectedSocial);
     } catch (error) {
         console.log(error)
@@ -397,7 +396,8 @@ const getAllRoommate = async (req, res) => {
             condition.city = city;
         }
         if (age) {
-            condition.age = age;
+            const [min_age, max_age] = age.split('-')
+            condition.age = { [Op.gte]: min_age, [Op.lte]: max_age };
         }
         if (minimum_stay) {
             condition.minimum_stay = minimum_stay;
@@ -406,6 +406,7 @@ const getAllRoommate = async (req, res) => {
         if (bedrooms) {
             condition.bedrooms = bedrooms;
         }
+
         if (bathrooms) {
             condition.bathrooms = bathrooms;
         }
@@ -533,7 +534,7 @@ const getRoommateById = async (req, res) => {
                 },
                 {
                     model: Users,
-                    attributes: ['name', 'address']
+                    attributes: ['name', 'address', 'picture']
                 }
             ],
         });
@@ -555,7 +556,7 @@ const getRoommate = async (req, res) => {
     try {
         const { user: { id } } = req;
 
-        const findData = await Roommate.findOne({
+        const findData = await Roommate.findAll({
             where: { user_id: id },
             include: [
                 {
