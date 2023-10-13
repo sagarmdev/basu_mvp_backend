@@ -6,10 +6,10 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             primaryKey: true,
         },
-        // media_type: {
-        //     type: Sequelize.INTEGER,
-        //     enum: [1, 2], //1 = photo , 2 = video
-        // },
+        media_type: {
+            type: Sequelize.INTEGER,
+            enum: [1, 2], //1 = photo , 2 = video
+        },
         roommate_id: {
             type: Sequelize.BIGINT.UNSIGNED,
             references: {
@@ -29,14 +29,6 @@ module.exports = (sequelize, Sequelize) => {
                 // return `${process.env.BACKEND_URL}/${val}`
             }
         },
-        // video: {
-        //     type: Sequelize.TEXT,
-        //     allowNull: true,
-        //     // get() {
-        //     //     const rawValue = this.getDataValue('video');
-        //     //     return rawValue ? ASSETS.getProfileUrl(rawValue) : null;
-        //     // }
-        // },
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,

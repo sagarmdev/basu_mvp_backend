@@ -381,6 +381,49 @@ const getAllEvents = async (req, res) => {
     }
 }
 
+//...........get all event by id............
+const getAllEventsById = async (req, res) => {
+    let validation = new Validator(req.query, {
+        id: 'required',
+    });
+    if (validation.fails()) {
+        firstMessage = Object.keys(validation.errors.all())[0];
+        return RESPONSE.error(res, validation.errors.first(firstMessage))
+    }
+    try {
+        const { id } = req.query;
+        const findEvent = await Event.findByPk(id, {
+            include: [
+                {
+                    model: Event_photos,
+                    attributes: ['photo', 'id']
+                },
+                {
+                    model: Event_categories,
+                    attributes: ['name', 'id']
+                },
+                {
+                    model: Selected_amenities,
+                    attributes: ['event_amenities_id', 'id'],
+                    include: [
+                        {
+                            model: Event_amenities,
+                            attributes: ['name', 'id']
+                        }
+                    ]
+                }
+            ],
+        });
+        // if (!findEvent.length) {
+        //     return RESPONSE.error(res, 2010);
+        // }
+        return RESPONSE.success(res, 2008, findEvent);
+    } catch (error) {
+        console.log(error)
+        return RESPONSE.error(res, error.message);
+    }
+}
+
 //.................get all event with filter.....................
 const getEventWithFilter = async (req, res) => {
     let validation = new Validator(req.query, {
@@ -448,6 +491,7 @@ module.exports = {
     deleteEventPhotos,
     deleteEvent,
     getAllEvents,
-    getEventWithFilter
+    getEventWithFilter,
+    getAllEventsById
 }
 

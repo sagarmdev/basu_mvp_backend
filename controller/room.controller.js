@@ -663,6 +663,7 @@ const getAllRooms = async (req, res) => {
                 }
 
             ],
+            order: [['createdAt', 'DESC']]
         });
 
         if (!rooms.length) {
@@ -720,6 +721,7 @@ const getRoom = async (req, res) => {
                     ]
                 }
             ],
+            order: [['createdAt', 'DESC']]
         })
 
         return RESPONSE.success(res, 1104, event);
