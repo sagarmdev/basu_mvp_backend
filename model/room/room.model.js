@@ -54,6 +54,11 @@ module.exports = (sequelize, Sequelize) => {
             enum: ['Student', 'Employee', 'Worker'],
             allowNull: false
         },
+        type: {
+            type: Sequelize.STRING,
+            enum: ['Any', 'Shared room', 'Private room', 'Student accommodation'],
+            allowNull: false
+        },
         availibility: {
             type: Sequelize.DATE,
         },

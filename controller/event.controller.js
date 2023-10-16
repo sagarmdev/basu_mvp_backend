@@ -11,7 +11,7 @@ const Event = db.event;
 const Event_photos = db.event_photos;
 const Event_booking = db.event_booking;
 const Selected_amenities = db.selected_amenities;
-
+const Users = db.users;
 
 
 //.......................get All event_categories.....
@@ -126,7 +126,7 @@ const createEvent = async (req, res) => {
         });
 
 
-        return RESPONSE.success(res, 2005, findEvent);
+        return RESPONSE.success(res, 2005);
     } catch (error) {
         console.log(error)
         return RESPONSE.error(res, error.message);
@@ -408,9 +408,13 @@ const getAllEventsById = async (req, res) => {
                     include: [
                         {
                             model: Event_amenities,
-                            attributes: ['name', 'id']
+                            attributes: ['name', 'id', 'icon_url']
                         }
                     ]
+                },
+                {
+                    model: Users,
+                    attributes: ['name', 'picture']
                 }
             ],
         });

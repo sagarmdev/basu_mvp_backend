@@ -55,7 +55,7 @@ const getAllInterest = async (req, res) => {
 
 //...............add roommate...............
 const addRoommate = async (req, res) => {
-    // console.log('req.body', req.body)
+    console.log('req.body', req.body)
     let validation = new Validator(req.body, {
         city: 'required|string',
         lat: 'required',
@@ -164,7 +164,7 @@ const addRoommate = async (req, res) => {
             ],
             order: [['createdAt', 'DESC']]
         });
-        return RESPONSE.success(res, 2201, findRoommate);
+        return RESPONSE.success(res, 2201);
     } catch (error) {
         console.log(error)
         return RESPONSE.error(res, error.message);
@@ -432,7 +432,7 @@ const getAllRoommate = async (req, res) => {
                 },
                 {
                     model: Users,
-                    attributes: ['name']
+                    attributes: ['name', 'picture']
                 }
             ],
             order: [['createdAt', 'DESC']]

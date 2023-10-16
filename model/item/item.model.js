@@ -65,6 +65,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
+        address: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,
