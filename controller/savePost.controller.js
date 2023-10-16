@@ -47,7 +47,7 @@ const savePost = async (req, res) => {
                 return RESPONSE.success(res, 1201);
             } else {
 
-                const post = await Save.create({ user_id: id, roomId });
+                const post = await Save.create({ user_id: id, roomId, post_category: "Room" });
                 await Room.update(
                     { is_save: true },
                     { where: { id: roomId } }
@@ -70,7 +70,7 @@ const savePost = async (req, res) => {
                 return RESPONSE.success(res, 1205);
             } else {
 
-                const post = await Save.create({ user_id: id, eventId });
+                const post = await Save.create({ user_id: id, eventId, post_category: "Event" });
                 await Event.update(
                     { is_save: true },
                     { where: { id: eventId } }
@@ -91,7 +91,7 @@ const savePost = async (req, res) => {
                 await Save.destroy({ where: { user_id: id, roommateId } });
                 return RESPONSE.success(res, 1207);
             } else {
-                const post = await Save.create({ user_id: id, roommateId });
+                const post = await Save.create({ user_id: id, roommateId, post_category: "Roommate" });
                 await Roommate.update(
                     { is_save: true },
                     { where: { id: roommateId } }
@@ -110,7 +110,7 @@ const savePost = async (req, res) => {
                 await Save.destroy({ where: { user_id: id, itemId } });
                 return RESPONSE.success(res, 1209);
             } else {
-                const post = await Save.create({ user_id: id, itemId });
+                const post = await Save.create({ user_id: id, itemId, post_category: "Item" });
                 await Item.update(
                     { is_save: true },
                     { where: { id: itemId } }
