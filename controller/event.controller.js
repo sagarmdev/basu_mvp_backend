@@ -370,6 +370,7 @@ const getAllEvents = async (req, res) => {
                     ]
                 }
             ],
+            order: [['createdAt', 'DESC']]
         });
         // if (!findEvent.length) {
         //     return RESPONSE.error(res, 2010);
@@ -418,9 +419,7 @@ const getAllEventsById = async (req, res) => {
                 }
             ],
         });
-        // if (!findEvent.length) {
-        //     return RESPONSE.error(res, 2010);
-        // }
+
         return RESPONSE.success(res, 2008, findEvent);
     } catch (error) {
         console.log(error)
@@ -472,6 +471,7 @@ const getEventWithFilter = async (req, res) => {
                     ]
                 }
             ],
+            order: [['createdAt', 'DESC']]
         })
         if (!findEvent.length) {
             return RESPONSE.error(res, 2010);

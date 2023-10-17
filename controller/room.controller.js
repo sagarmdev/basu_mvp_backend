@@ -521,6 +521,7 @@ const getAllRooms = async (req, res) => {
                         ]
                     }
                 ],
+                order: [['createdAt', 'DESC']]
             });
             return RESPONSE.success(res, 1104, rooms);
         }

@@ -10,9 +10,9 @@ const Users = db.users;
 const Roommate_media = db.roommate_media;
 const Roommate_social = db.roommate_socials;
 const Roommate_interests = db.roommate_interests;
-const Lifestyle = db.lifestyle
-const SelectedSocial = db.selectedSocials
-const SelectedInterest = db.selectedInterest
+const Lifestyle = db.lifestyle;
+const SelectedSocial = db.selectedSocials;
+const SelectedInterest = db.selectedInterest;
 const SelectedLifestyle = db.selectedLifestyle;
 const Roommate_booking = db.roommate_booking;
 
@@ -55,7 +55,6 @@ const getAllInterest = async (req, res) => {
 
 //...............add roommate...............
 const addRoommate = async (req, res) => {
-    console.log('req.body', req.body)
     let validation = new Validator(req.body, {
         city: 'required|string',
         lat: 'required',
@@ -70,23 +69,26 @@ const addRoommate = async (req, res) => {
         bathrooms: 'required|numeric',
         bedrooms: 'required|numeric',
         no_of_roommates: 'required|numeric',
+        required_roommate: 'required|numeric',
         marital_status: 'required|in:Single,Married',
         gender_preference: 'required|in:Male,Female,Other',
         preference_food_choice: 'required|in:Vegetarian,Non-Vegetarian',
         preference_age: 'required|in:12-18 Year,18-35 Year,35-50 Year',
+        lifestyle: 'required|in:Pet Friendly,Non-smoker',
         message: 'required|string',
         interest_id: 'required|array',
         social_id: 'required|array',
         lifestyle_id: 'required|array',
+        address: 'required|string'
     });
     if (validation.fails()) {
         firstMessage = Object.keys(validation.errors.all())[0];
         return RESPONSE.error(res, validation.errors.first(firstMessage))
     }
     try {
-        const { address, city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, marital_status, gender_preference, preference_food_choice, preference_age, interest_id, social_id, lifestyle_id, message } = req.body;
+        const { city, lat, long, address, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, interest_id, social_id, lifestyle_id, message } = req.body;
         const authUser = req.user.id
-        const addRoommate = await Roommate.create({ user_id: authUser, address, city, lat, long, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, marital_status, gender_preference, preference_food_choice, preference_age, message })
+        const addRoommate = await Roommate.create({ user_id: authUser, city, lat, long, address, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, message })
         if (addRoommate) {
             for (const selectedInterest of interest_id) {
                 await SelectedInterest.create({
@@ -162,9 +164,8 @@ const addRoommate = async (req, res) => {
                     attributes: ['name']
                 }
             ],
-            order: [['createdAt', 'DESC']]
         });
-        return RESPONSE.success(res, 2201);
+        return RESPONSE.success(res, 2201, findRoommate);
     } catch (error) {
         console.log(error)
         return RESPONSE.error(res, error.message);

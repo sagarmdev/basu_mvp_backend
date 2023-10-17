@@ -254,6 +254,7 @@ const getAllRentAndSale = async (req, res) => {
                     attributes: ['name', 'id']
                 },
             ],
+            order: [['createdAt', 'DESC']]
         });
 
         if (!findAllData.length) {
