@@ -69,12 +69,10 @@ const addRoommate = async (req, res) => {
         bathrooms: 'required|numeric',
         bedrooms: 'required|numeric',
         no_of_roommates: 'required|numeric',
-        required_roommate: 'required|numeric',
         marital_status: 'required|in:Single,Married',
         gender_preference: 'required|in:Male,Female,Other',
         preference_food_choice: 'required|in:Vegetarian,Non-Vegetarian',
         preference_age: 'required|in:12-18 Year,18-35 Year,35-50 Year',
-        lifestyle: 'required|in:Pet Friendly,Non-smoker',
         message: 'required|string',
         interest_id: 'required|array',
         social_id: 'required|array',
@@ -86,9 +84,9 @@ const addRoommate = async (req, res) => {
         return RESPONSE.error(res, validation.errors.first(firstMessage))
     }
     try {
-        const { city, lat, long, address, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, interest_id, social_id, lifestyle_id, message } = req.body;
+        const { city, lat, long, address, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, marital_status, gender_preference, preference_food_choice, preference_age, interest_id, social_id, lifestyle_id, message } = req.body;
         const authUser = req.user.id
-        const addRoommate = await Roommate.create({ user_id: authUser, city, lat, long, address, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, required_roommate, marital_status, gender_preference, preference_food_choice, preference_age, lifestyle, message })
+        const addRoommate = await Roommate.create({ user_id: authUser, city, lat, long, address, gender, age, Occupation, food_choice, religion, monthly_rent, minimum_stay, bathrooms, bedrooms, no_of_roommates, marital_status, gender_preference, preference_food_choice, preference_age, message })
         if (addRoommate) {
             for (const selectedInterest of interest_id) {
                 await SelectedInterest.create({
