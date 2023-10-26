@@ -53,6 +53,10 @@ module.exports = (sequelize, Sequelize) => {
                 key: 'id'
             }
         },
+        is_save: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+        },
         lat: {
             type: Sequelize.STRING,
             allowNull: false

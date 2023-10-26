@@ -11,7 +11,6 @@ const Event = db.event;
 const Event_photos = db.event_photos;
 const Event_booking = db.event_booking;
 const Selected_amenities = db.selected_amenities;
-const SavedPost = db.saves
 const Users = db.users;
 
 
@@ -349,7 +348,6 @@ const getEvent = async (req, res) => {
 //...........get all event............
 const getAllEvents = async (req, res) => {
     try {
-        const { user: { id } } = req;
         const authUser = req.user;
         const findEvent = await Event.findAll({
             include: [
@@ -374,12 +372,6 @@ const getAllEvents = async (req, res) => {
             ],
             order: [['createdAt', 'DESC']]
         });
-        for (const event of findEvent) {
-            const isSaved = await SavedPost.findOne({
-                where: { user_id: id, eventId: event.id }
-            });
-            event.dataValues.isSaved = isSaved !== null;
-        }
         // if (!findEvent.length) {
         //     return RESPONSE.error(res, 2010);
         // }
@@ -393,16 +385,15 @@ const getAllEvents = async (req, res) => {
 //...........get all event by id............
 const getAllEventsById = async (req, res) => {
     let validation = new Validator(req.query, {
-        ids: 'required',
+        id: 'required',
     });
     if (validation.fails()) {
         firstMessage = Object.keys(validation.errors.all())[0];
         return RESPONSE.error(res, validation.errors.first(firstMessage))
     }
     try {
-        const { ids } = req.query;
-        const { user: { id } } = req
-        const findEvent = await Event.findByPk(ids, {
+        const { id } = req.query;
+        const findEvent = await Event.findByPk(id, {
             include: [
                 {
                     model: Event_photos,
@@ -428,16 +419,6 @@ const getAllEventsById = async (req, res) => {
                 }
             ],
         });
-        const isSaved = await SavedPost.findOne({
-            where: { user_id: id, eventId: ids }
-        });
-
-        if (isSaved) {
-            findEvent.dataValues.isSaved = true;
-        } else {
-            findEvent.dataValues.isSaved = false;
-        }
-
 
         return RESPONSE.success(res, 2008, findEvent);
     } catch (error) {

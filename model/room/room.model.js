@@ -15,6 +15,10 @@ module.exports = (sequelize, Sequelize) => {
                 key: 'id'
             }
         },
+        is_save: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+        },
         title: {
             type: Sequelize.STRING(200),
             allowNull: true,

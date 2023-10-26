@@ -11,11 +11,6 @@ function imageUpload(fileObjArray, pathFolder = "room_image") {
             console.log('fileObjArray[index]', fileObjArray[index])
             const image = uid(16) + path.extname(fileObjArray[index].originalname);
             const uploadPath = "./public/" + pathFolder + "/" + image;
-            if (!fs.existsSync('./public/' + pathFolder)) {
-                fs.mkdirSync('./public/' + pathFolder, {
-                    recursive: true
-                });
-            }
             const outStream = fs.createWriteStream(uploadPath);
             outStream.write(fileObjArray[index].buffer);
             outStream.end();
@@ -32,11 +27,6 @@ function videoUpload(fileObjArray, pathFolder = "video") {
         if (fileObjArray[index].fieldname === "mediaVideo") {
             const image = uid(16) + path.extname(fileObjArray[index].originalname);
             const uploadPath = "./public/" + pathFolder + "/" + image;
-            if (!fs.existsSync('./public/' + pathFolder)) {
-                fs.mkdirSync('./public/' + pathFolder, {
-                    recursive: true
-                });
-            }
             const outStream = fs.createWriteStream(uploadPath);
             outStream.write(fileObjArray[index].buffer);
             outStream.end();
@@ -82,11 +72,6 @@ function uploadRoommateFiles(fileObjArray, pathFolder = "roommate_media") {
     for (let index = 0, len = fileObjArray.length; index < len; ++index) {
         const roommate_media = uid(16) + path.extname(fileObjArray[index].originalname);
         const uploadPath = "./public/" + pathFolder + "/" + roommate_media;
-        if (!fs.existsSync('./public/' + pathFolder)) {
-            fs.mkdirSync('./public/' + pathFolder, {
-                recursive: true
-            });
-        }
         const outStream = fs.createWriteStream(uploadPath);
         outStream.write(fileObjArray[index].buffer);
         outStream.end();
@@ -108,11 +93,6 @@ function UploadFiles(fileObjArray, pathFolder = "images", fieldname) {
         if (fileObjArray[index].fieldname === fieldname) {
             const image = uid(16) + path.extname(fileObjArray[index].originalname);
             const uploadPath = "./public/" + pathFolder + "/" + image;
-            if (!fs.existsSync('./public/' + pathFolder)) {
-                fs.mkdirSync('./public/' + pathFolder, {
-                    recursive: true
-                });
-            }
             const outStream = fs.createWriteStream(uploadPath);
             outStream.write(fileObjArray[index].buffer);
             outStream.end();
